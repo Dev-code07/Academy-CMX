@@ -17,7 +17,7 @@ export const submitLead = createServerFn({ method: "POST" })
     })
   )
   .handler(async ({ data }) => {
-    const adminEmail = data.adminEmail || process.env.DEFAULT_ADMIN_EMAIL || "rahul.codexmatrix@gmail.com";
+    const adminEmail = data.adminEmail || process.env.DEFAULT_ADMIN_EMAIL || "codexmattrixacademy@gmail.com";
 
     const smtpHost = process.env.SMTP_HOST;
     const smtpPort = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : undefined;

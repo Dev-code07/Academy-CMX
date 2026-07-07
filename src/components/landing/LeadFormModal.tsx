@@ -62,7 +62,7 @@ export function LeadFormModal({
       setErr("Please check your details and try again.");
       return;
     }
-    const adminEmail = "rahul.codexmatrix@gmail.com";
+    const adminEmail = "codexmattrixacademy@gmail.com";
     try {
       const result = await submitLead({ data: { ...parsed.data, source, adminEmail, answers: payload?.answers } });
       setDone(true);
@@ -156,10 +156,10 @@ export function LeadFormModal({
                       <p className="mb-2 text-sm text-muted-foreground">
                         This request will be sent to{' '}
                         <a
-                          href="mailto:rahul.codexmatrix@gmail.com"
+                          href="mailto:codexmattrixacademy@gmail.com"
                           className="text-[color:var(--accent)] underline"
                         >
-                          rahul.codexmatrix@gmail.com
+                          codexmattrixacademy@gmail.com
                         </a>
                       </p>
                       <Field
