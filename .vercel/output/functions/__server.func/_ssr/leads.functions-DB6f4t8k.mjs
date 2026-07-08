@@ -1,5 +1,5 @@
-import { c as createServerRpc } from "./createServerRpc-Bcuu05LQ.mjs";
-import { a as createServerFn } from "./server-R7QUSnGq.mjs";
+import { c as createServerRpc } from "./createServerRpc-COFUSbbe.mjs";
+import { a as createServerFn } from "./server-CxnyA7Ml.mjs";
 import { R as Resend } from "../_libs/resend.mjs";
 import "../_libs/seroval.mjs";
 import "../_libs/react.mjs";
@@ -32,22 +32,37 @@ import "../_libs/fast-sha256.mjs";
 async function sendLeadEmailViaResend(input) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM;
-  if (!apiKey || !from) {
+  const missing = [];
+  if (!apiKey) missing.push("RESEND_API_KEY");
+  if (!from) missing.push("RESEND_FROM");
+  if (missing.length) {
     console.warn("Resend not configured; skipping email.", {
-      hasApiKey: !!apiKey,
-      hasFrom: !!from,
+      missing,
       to: input.to,
-      subject: input.subject
+      subject: input.subject,
+      nodeEnv: "production",
+      hasSandboxRecipient: !!process.env.RESEND_SANDBOX_RECIPIENT
     });
-    return { sent: false };
+    return { sent: false, missing };
   }
+  const resendFrom = from;
   const resend = new Resend(apiKey);
-  process.env.RESEND_SANDBOX_RECIPIENT;
+  const sandboxRecipient = process.env.RESEND_SANDBOX_RECIPIENT;
   const nodeEnv = "production";
-  const shouldUseSandbox = nodeEnv !== "production";
+  const isProduction = process.env.VERCEL_ENV === "production" || nodeEnv === "production";
+  const shouldUseSandbox = !isProduction;
   const finalTo = input.to;
+  console.info("[server][resend] send attempt", {
+    nodeEnv,
+    isProduction,
+    shouldUseSandbox,
+    sandboxRecipient: sandboxRecipient ?? null,
+    inputTo: input.to,
+    finalTo
+  });
   await resend.emails.send({
-    from,
+    // Resend typings are strict; runtime we ensured `resendFrom` exists.
+    from: resendFrom,
     to: finalTo,
     subject: input.subject,
     text: input.text,

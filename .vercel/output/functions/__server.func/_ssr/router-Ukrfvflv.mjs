@@ -290,7 +290,7 @@ const assessmentQuestions = [
     options: ["0", "1–3", "4–7", "8+"]
   }
 ];
-const $$splitComponentImporter = () => import("./index-C8FY8YzK.mjs");
+const $$splitComponentImporter = () => import("./index-Pw_NdKhd.mjs");
 const TITLE = "CodexMattrix Academy™ — Build Your AI Career, Launch Your Startup";
 const DESC = "AI Career Acceleration, Industry Training, Placement, Startup Incubation & Business Transformation. Master AI, ML, GenAI, Automation & Data Science with global mentors and live projects.";
 const Route = createFileRoute("/")({
