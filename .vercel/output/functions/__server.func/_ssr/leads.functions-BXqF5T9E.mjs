@@ -1,5 +1,5 @@
-import { c as createServerRpc } from "./createServerRpc-COFUSbbe.mjs";
-import { a as createServerFn } from "./server-CxnyA7Ml.mjs";
+import { c as createServerRpc } from "./createServerRpc-C22oP1H8.mjs";
+import { a as createServerFn } from "./server-DlWBeI9v.mjs";
 import { R as Resend } from "../_libs/resend.mjs";
 import "../_libs/seroval.mjs";
 import "../_libs/react.mjs";
@@ -49,12 +49,11 @@ async function sendLeadEmailViaResend(input) {
   const resend = new Resend(apiKey);
   const sandboxRecipient = process.env.RESEND_SANDBOX_RECIPIENT;
   const nodeEnv = "production";
-  const isProduction = process.env.VERCEL_ENV === "production" || nodeEnv === "production";
-  const shouldUseSandbox = !isProduction;
-  const finalTo = input.to;
+  const isRunningOnVercel = !!process.env.VERCEL;
+  const shouldUseSandbox = !isRunningOnVercel && !!sandboxRecipient;
+  const finalTo = shouldUseSandbox ? sandboxRecipient : input.to;
   console.info("[server][resend] send attempt", {
     nodeEnv,
-    isProduction,
     shouldUseSandbox,
     sandboxRecipient: sandboxRecipient ?? null,
     inputTo: input.to,

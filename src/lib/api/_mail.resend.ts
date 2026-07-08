@@ -37,13 +37,14 @@ export async function sendLeadEmailViaResend(input: ResendSendInput) {
 
   // Vercel sometimes sets NODE_ENV differently than expected.
   // Prefer an explicit production check.
-  const isProduction = process.env.VERCEL_ENV === "production" || nodeEnv === "production";
-  const shouldUseSandbox = !isProduction && !!sandboxRecipient;
+  // Never route to sandbox on Vercel; it causes “200 OK but no email in my inbox”.
+  // Keep sandbox behavior only for fully local development (no Vercel env at all).
+  const isRunningOnVercel = !!process.env.VERCEL;
+  const shouldUseSandbox = !isRunningOnVercel && !!sandboxRecipient;
   const finalTo = shouldUseSandbox ? sandboxRecipient! : input.to;
 
   console.info("[server][resend] send attempt", {
     nodeEnv,
-    isProduction,
     shouldUseSandbox,
     sandboxRecipient: sandboxRecipient ?? null,
     inputTo: input.to,

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Star } from "lucide-react";
-import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, type CarouselApi } from "@/components/ui/carousel";
 import { getGoogleReviews } from "@/lib/api/googleReviews.functions";
 import { cn } from "@/lib/utils";
 import { SectionHeading } from "./shared/SectionHeading";
@@ -30,6 +30,7 @@ export function GoogleReviews() {
   const [reviews, setReviews] = React.useState<Array<{ authorName: string; rating: number; text: string; relativeTimeDescription: string; profilePhotoUrl?: string }>>([]);
   const [loading, setLoading] = React.useState(true);
   const [message, setMessage] = React.useState<string | null>(null);
+  const [carouselApi, setCarouselApi] = React.useState<CarouselApi>();
 
   React.useEffect(() => {
     let active = true;
@@ -56,7 +57,7 @@ export function GoogleReviews() {
           return;
         }
 
-        setReviews(result.reviews.slice(0, 6));
+        setReviews(result.reviews);
         setMessage(null);
       })
       .catch((err) => {
@@ -73,6 +74,18 @@ export function GoogleReviews() {
       active = false;
     };
   }, []);
+
+  React.useEffect(() => {
+    if (!carouselApi || reviews.length <= 1) return;
+
+    const timer = window.setInterval(() => {
+      carouselApi.scrollNext();
+    }, 3500);
+
+    return () => {
+      window.clearInterval(timer);
+    };
+  }, [carouselApi, reviews.length]);
 
   return (
     <section className="relative py-24 sm:py-32">
@@ -98,10 +111,18 @@ export function GoogleReviews() {
             No reviews found.
           </div>
         ) : (
-          <Carousel className="relative">
-            <CarouselContent className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <Carousel
+            className="relative"
+            setApi={setCarouselApi}
+            opts={{
+              align: "start",
+              loop: true,
+              slidesToScroll: 1,
+            }}
+          >
+            <CarouselContent>
               {reviews.map((review, index) => (
-                <CarouselItem key={index}>
+                <CarouselItem key={index} className="basis-full md:basis-1/2 lg:basis-1/3">
                   <div className="h-full rounded-3xl border border-white/10 bg-slate-950/80 p-6 shadow-[0_20px_80px_-30px_rgba(15,23,42,0.9)]">
                     <div className="flex items-center gap-4">
                       <div className="grid h-12 w-12 place-items-center overflow-hidden rounded-full bg-slate-800">
