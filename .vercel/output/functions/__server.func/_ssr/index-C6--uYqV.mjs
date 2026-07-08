@@ -2,11 +2,11 @@ import { r as reactExports, j as jsxRuntimeExports } from "../_libs/react.mjs";
 import { L as Link } from "../_libs/tanstack__react-router.mjs";
 import { c as clsx } from "../_libs/clsx.mjs";
 import { t as twMerge } from "../_libs/tailwind-merge.mjs";
-import { p as personas, t as trustStats, a as assessmentQuestions, w as whyCards, s as salaryRoles, l as learningPaths, b as liveProjects, c as skills, m as mentors, d as careerServices, h as hiringPartners, i as incubationTracks, e as incubationFeatures, f as stories, g as globalCountries, j as certifications, k as faqs } from "./router-CEdIwaZa.mjs";
+import { p as personas, t as trustStats, a as assessmentQuestions, w as whyCards, s as salaryRoles, l as learningPaths, b as liveProjects, c as skills, m as mentors, d as careerServices, h as hiringPartners, i as incubationTracks, e as incubationFeatures, f as stories, g as globalCountries, j as certifications, k as faqs } from "./router-CRHhprP7.mjs";
 import { u as useEmblaCarousel } from "../_libs/embla-carousel-react.mjs";
 import { S as Slot } from "../_libs/radix-ui__react-slot.mjs";
 import { c as cva } from "../_libs/class-variance-authority.mjs";
-import { a as createServerFn, T as TSS_SERVER_FUNCTION, g as getServerFnById } from "./server-DlWBeI9v.mjs";
+import { a as createServerFn, T as TSS_SERVER_FUNCTION, g as getServerFnById } from "./server-CQgTzQcz.mjs";
 import { R as Root2, I as Item, H as Header$1, T as Trigger2, C as Content2 } from "../_libs/radix-ui__react-accordion.mjs";
 import { D as Dialog$1, a as DialogPortal$1, b as DialogContent$1, c as DialogClose, d as DialogTitle$1, e as DialogOverlay$1, f as DialogDescription$1 } from "../_libs/radix-ui__react-dialog.mjs";
 import "../_libs/seroval.mjs";
@@ -1106,6 +1106,7 @@ function GoogleReviews() {
   const [reviews, setReviews] = reactExports.useState([]);
   const [loading, setLoading] = reactExports.useState(true);
   const [message, setMessage] = reactExports.useState(null);
+  const [carouselApi, setCarouselApi] = reactExports.useState();
   reactExports.useEffect(() => {
     let active = true;
     getGoogleReviews({ data: { placeId: PLACE_ID, query: PLACE_QUERY } }).then((result) => {
@@ -1125,7 +1126,7 @@ function GoogleReviews() {
         setReviews([]);
         return;
       }
-      setReviews(result.reviews.slice(0, 6));
+      setReviews(result.reviews);
       setMessage(null);
     }).catch((err) => {
       console.error(err);
@@ -1139,6 +1140,15 @@ function GoogleReviews() {
       active = false;
     };
   }, []);
+  reactExports.useEffect(() => {
+    if (!carouselApi || reviews.length <= 1) return;
+    const timer = window.setInterval(() => {
+      carouselApi.scrollNext();
+    }, 3500);
+    return () => {
+      window.clearInterval(timer);
+    };
+  }, [carouselApi, reviews.length]);
   return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-24 sm:py-32", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-10 text-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       SectionHeading,
@@ -1151,28 +1161,40 @@ function GoogleReviews() {
         subtitle: "Real feedback from students and alumni on our training and placement support."
       }
     ) }),
-    loading ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-3xl border border-white/10 bg-slate-950/70 p-10 text-center text-sm text-slate-400", children: "Loading reviews..." }) : message ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-3xl border border-rose-500/20 bg-rose-500/5 p-10 text-center text-sm text-rose-200", children: message }) : reviews.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-3xl border border-white/10 bg-slate-950/70 p-10 text-center text-sm text-slate-400", children: "No reviews found." }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(Carousel, { className: "relative", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(CarouselContent, { className: "grid gap-6 sm:grid-cols-2 lg:grid-cols-3", children: reviews.map((review, index) => /* @__PURE__ */ jsxRuntimeExports.jsx(CarouselItem, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "h-full rounded-3xl border border-white/10 bg-slate-950/80 p-6 shadow-[0_20px_80px_-30px_rgba(15,23,42,0.9)]", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid h-12 w-12 place-items-center overflow-hidden rounded-full bg-slate-800", children: review.profilePhotoUrl ? /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "img",
-            {
-              src: review.profilePhotoUrl,
-              alt: review.authorName,
-              className: "h-full w-full object-cover"
-            }
-          ) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-semibold text-slate-200", children: review.authorName.slice(0, 1).toUpperCase() }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-semibold text-white", children: review.authorName }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-400", children: review.relativeTimeDescription })
-          ] })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-4 flex gap-1", children: renderStars(review.rating) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-4 text-sm leading-6 text-slate-300", children: review.text })
-      ] }) }, index)) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(CarouselPrevious, {}),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(CarouselNext, {})
-    ] })
+    loading ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-3xl border border-white/10 bg-slate-950/70 p-10 text-center text-sm text-slate-400", children: "Loading reviews..." }) : message ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-3xl border border-rose-500/20 bg-rose-500/5 p-10 text-center text-sm text-rose-200", children: message }) : reviews.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-3xl border border-white/10 bg-slate-950/70 p-10 text-center text-sm text-slate-400", children: "No reviews found." }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      Carousel,
+      {
+        className: "relative",
+        setApi: setCarouselApi,
+        opts: {
+          align: "start",
+          loop: true,
+          slidesToScroll: 1
+        },
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(CarouselContent, { children: reviews.map((review, index) => /* @__PURE__ */ jsxRuntimeExports.jsx(CarouselItem, { className: "basis-full md:basis-1/2 lg:basis-1/3", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "h-full rounded-3xl border border-white/10 bg-slate-950/80 p-6 shadow-[0_20px_80px_-30px_rgba(15,23,42,0.9)]", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid h-12 w-12 place-items-center overflow-hidden rounded-full bg-slate-800", children: review.profilePhotoUrl ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "img",
+                {
+                  src: review.profilePhotoUrl,
+                  alt: review.authorName,
+                  className: "h-full w-full object-cover"
+                }
+              ) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-semibold text-slate-200", children: review.authorName.slice(0, 1).toUpperCase() }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-semibold text-white", children: review.authorName }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-400", children: review.relativeTimeDescription })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-4 flex gap-1", children: renderStars(review.rating) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-4 text-sm leading-6 text-slate-300", children: review.text })
+          ] }) }, index)) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(CarouselPrevious, {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(CarouselNext, {})
+        ]
+      }
+    )
   ] }) });
 }
 const logoNames = [

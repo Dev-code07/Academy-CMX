@@ -19,7 +19,7 @@ import "path";
 import "os";
 import "crypto";
 import "../_libs/isbot.mjs";
-const appCss = "/assets/styles-CORrtiHW.css";
+const appCss = "/assets/styles-lMoposOf.css";
 function NotFoundComponent() {
   return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex min-h-screen items-center justify-center bg-background px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-md text-center", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-7xl font-bold text-foreground", children: "404" }),
@@ -290,7 +290,7 @@ const assessmentQuestions = [
     options: ["0", "1–3", "4–7", "8+"]
   }
 ];
-const $$splitComponentImporter = () => import("./index-h--evC3w.mjs");
+const $$splitComponentImporter = () => import("./index-C6--uYqV.mjs");
 const TITLE = "CodexMattrix Academy™ — Build Your AI Career, Launch Your Startup";
 const DESC = "AI Career Acceleration, Industry Training, Placement, Startup Incubation & Business Transformation. Master AI, ML, GenAI, Automation & Data Science with global mentors and live projects.";
 const Route = createFileRoute("/")({
