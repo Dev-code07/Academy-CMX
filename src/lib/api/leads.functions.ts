@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import nodemailer from "nodemailer";
+
+import { sendLeadEmailViaResend } from "./_mail.resend";
 
 // Server function to handle lead submissions. Sends an email to the profile-specific admin.
 export const submitLead = createServerFn({ method: "POST" })
@@ -14,15 +15,13 @@ export const submitLead = createServerFn({ method: "POST" })
       source: z.string().optional(),
       adminEmail: z.string().email().optional(),
       answers: z.record(z.string(), z.string()).optional(),
-    })
+    }),
   )
   .handler(async ({ data }) => {
-    const adminEmail = data.adminEmail || process.env.DEFAULT_ADMIN_EMAIL || "codexmattrixacademy@gmail.com";
-
-    const smtpHost = process.env.SMTP_HOST;
-    const smtpPort = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : undefined;
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
+    const adminEmail =
+      data.adminEmail ||
+      process.env.DEFAULT_ADMIN_EMAIL ||
+      "codexmattrixacademy@gmail.com";
 
     const textLines = [
       `Name: ${data.name}`,
@@ -41,41 +40,27 @@ export const submitLead = createServerFn({ method: "POST" })
     }
 
     const text = textLines.join("\n");
-
-    // If SMTP not configured, just log and return ok=false
-    if (!smtpHost || !smtpPort || !smtpUser || !smtpPass) {
-      console.warn("SMTP not configured, lead will be logged instead of emailed.", { adminEmail, payload: data });
-      console.info("[server] lead received", data);
-      return { ok: true, emailed: false };
-    }
-
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: smtpPort === 465,
-      auth: {
-        user: smtpUser,
-        pass: smtpPass,
-      },
-    });
-
-    const from = process.env.SMTP_FROM || smtpUser;
-
     const subject = `New lead: ${data.profile} — ${data.name}`;
 
     try {
-      await transporter.sendMail({
-        from,
+      const res = await sendLeadEmailViaResend({
         to: adminEmail,
         subject,
         text,
         html: `<pre style="white-space:pre-wrap">${text}</pre>`,
       });
-      console.info("[server] lead emailed to", adminEmail);
+
+      if (!res.sent) {
+        // Resend not configured; treat as non-blocking.
+        return { ok: true, emailed: false };
+      }
+
+      console.info("[server] lead emailed via Resend to", adminEmail);
       return { ok: true, emailed: true };
     } catch (err) {
-      console.error("[server] failed to send lead email", err);
+      console.error("[server] failed to send lead email via Resend", err);
       // still return success so UI doesn't block; surface emailed:false
       return { ok: false, emailed: false };
     }
   });
+
