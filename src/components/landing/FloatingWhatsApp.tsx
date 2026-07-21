@@ -1,6 +1,5 @@
 import { waLink } from "@/lib/landing/config";
 import { MessageCircle } from "lucide-react";
-
 export function FloatingWhatsApp() {
   return (
     <a

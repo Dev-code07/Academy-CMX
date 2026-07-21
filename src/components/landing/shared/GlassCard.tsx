@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils";
 import { type HTMLAttributes, forwardRef } from "react";
-
 export const GlassCard = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement> & { glow?: boolean }>(
   ({ className, glow, ...props }, ref) => (
     <div

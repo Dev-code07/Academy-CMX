@@ -5,14 +5,12 @@ import { whyCards } from "@/lib/landing/data";
 import {
   Brain, Users, Rocket, Briefcase, Award, Lightbulb, Cog, Globe,
 } from "lucide-react";
-
 const iconMap: Record<string, React.ElementType> = {
   Brain, Users, Rocket, Briefcase, Award, Lightbulb, Cog, Globe,
 };
-
 export function WhyChoose() {
   return (
-    <section id="why" className="relative py-24 sm:py-32">
+    <section id="why" className="relative py-12 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="Why CodexMattrix"

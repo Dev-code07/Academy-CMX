@@ -11,14 +11,13 @@ export function SalaryDashboard() {
   const [active, setActive] = useState(0);
   const role = salaryRoles[active];
   return (
-    <section className="relative py-24 sm:py-32">
+    <section className="relative py-12 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="Industry opportunity"
           title={<>AI is reshaping <span className="text-gradient">every industry</span></>}
           subtitle="Live salary benchmarks across the highest-leverage AI roles in 2026."
         />
-
         <div className="mt-14 grid gap-6 lg:grid-cols-[1fr_1.4fr]">
           <GlassCard className="glass-strong p-2 sm:p-3">
             <div className="max-h-[460px] overflow-auto">
@@ -40,7 +39,6 @@ export function SalaryDashboard() {
               ))}
             </div>
           </GlassCard>
-
           <GlassCard className="glass-strong p-6 sm:p-8">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
@@ -51,13 +49,11 @@ export function SalaryDashboard() {
                 <Flame className="size-3" /> {role.outlook}
               </span>
             </div>
-
-            <div className="mt-6 grid grid-cols-3 gap-3">
+            <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-3">
               <Metric icon={<TrendingUp className="size-4" />} label="Avg salary" value={`$${role.avg}k`} />
               <Metric icon={<Sparkles className="size-4" />} label="Demand growth" value={`+${role.growth}%`} />
               <Metric icon={<Flame className="size-4" />} label="Outlook" value={role.outlook} />
             </div>
-
             <div className="mt-6 h-[260px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={salaryRoles}>
@@ -102,7 +98,6 @@ export function SalaryDashboard() {
     </section>
   );
 }
-
 function Metric({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
     <div className="glass rounded-xl p-4">

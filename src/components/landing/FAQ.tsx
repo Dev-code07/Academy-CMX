@@ -1,10 +1,9 @@
 import { SectionHeading } from "./shared/SectionHeading";
 import { faqs } from "@/lib/landing/data";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-
 export function FAQ() {
   return (
-    <section id="faq" className="relative py-24 sm:py-32">
+    <section id="faq" className="relative py-12 md:py-24">
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="FAQ"

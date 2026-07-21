@@ -3,7 +3,6 @@ import { GlassCard } from "./shared/GlassCard";
 import { GlowButton } from "./shared/GlowButton";
 import { useLeadModal } from "./shared/LeadContext";
 import { Sparkles } from "lucide-react";
-
 function useCountdown(targetDays = 9) {
   const [target, setTarget] = useState(0);
   const [now, setNow] = useState(0);
@@ -21,7 +20,6 @@ function useCountdown(targetDays = 9) {
   const s = Math.floor((diff % 60000) / 1000);
   return { d, h, m, s };
 }
-
 export function UrgencyScholarships() {
   const t = useCountdown();
   const seatsTotal = 60;
@@ -29,7 +27,7 @@ export function UrgencyScholarships() {
   const pct = ((seatsTotal - seatsLeft) / seatsTotal) * 100;
   const { openLead } = useLeadModal();
   return (
-    <section className="relative py-24 sm:py-32">
+    <section className="relative py-12 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <GlassCard className="glass-strong overflow-hidden p-8 sm:p-12">
           <div className="grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:items-center">
@@ -43,7 +41,6 @@ export function UrgencyScholarships() {
               <p className="mt-4 max-w-lg text-sm text-muted-foreground">
                 Limited seats per cohort to preserve mentor-to-learner ratio. Scholarships awarded on a rolling basis to the strongest applications.
               </p>
-
               <div className="mt-6">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-muted-foreground">Seats remaining</span>
@@ -53,17 +50,15 @@ export function UrgencyScholarships() {
                   <div className="h-full bg-gradient-primary transition-all duration-700" style={{ width: `${pct}%` }} />
                 </div>
               </div>
-
               <GlowButton size="lg" className="mt-7" onClick={() => openLead("scholarship")}>
                 Apply for Scholarship
               </GlowButton>
             </div>
-
             <div className="rounded-2xl border border-white/10 bg-[oklch(0.1_0.04_270)] p-6">
               <p className="text-center text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground">
                 Application deadline
               </p>
-              <div className="mt-5 grid grid-cols-4 gap-3 text-center">
+              <div className="mt-5 grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
                 {[
                   { l: "Days", v: t.d },
                   { l: "Hours", v: t.h },

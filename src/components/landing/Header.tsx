@@ -14,6 +14,7 @@ const nav = [
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const { openLead } = useLeadModal();
 
   useEffect(() => {
@@ -23,15 +24,32 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [mobileOpen]);
+
+  const handleNavClick = () => {
+    setMobileOpen(false);
+  };
+
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ${
-        scrolled
-          ? "border-b border-white/10 bg-[oklch(0.1_0.04_270)/0.7] backdrop-blur-xl"
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+        scrolled || mobileOpen
+          ? "border-b border-white/10 bg-[oklch(0.1_0.04_270)] md:bg-[oklch(0.1_0.04_270)/0.7] md:backdrop-blur-xl"
           : "border-b border-transparent"
       }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+        {/* Logo */}
         <Link to="/" className="group flex items-center gap-2.5">
           <span className="relative grid size-9 place-items-center rounded-xl bg-gradient-primary text-sm font-bold shadow-glow">
             CM
@@ -43,6 +61,7 @@ export function Header() {
           </span>
         </Link>
 
+        {/* Desktop Navigation */}
         <nav className="hidden items-center gap-8 md:flex">
           {nav.map((n) => (
             <a
@@ -55,15 +74,91 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
-          {/* <GlowButton variant="ghost" size="md" className="hidden sm:inline-flex" onClick={() => openLead("header-secondary")}>
-            Login
-          </GlowButton> */}
+        {/* Desktop CTA Button */}
+        <div className="hidden md:flex items-center gap-2">
           <GlowButton size="md" onClick={() => openLead("header-cta")}>
             Book Free Session
           </GlowButton>
         </div>
+
+        {/* Mobile Toggle Button */}
+        <button
+          type="button"
+          onClick={() => setMobileOpen((prev) => !prev)}
+          className="relative z-50 flex size-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-foreground transition-colors hover:bg-white/10 md:hidden"
+          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileOpen}
+        >
+          {mobileOpen ? (
+            <svg
+              className="size-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          ) : (
+            <svg
+              className="size-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          )}
+        </button>
       </div>
+
+      {/* Mobile Overlay Menu */}
+      {mobileOpen && (
+        <div className="relative fixed inset-x-0 top-0 bottom-0 z-40 flex h-[calc(55vh-4rem)] flex-col justify-between overflow-hidden bg-[oklch(0.1_0.04_270)] p-6 md:hidden">
+          {/* Subtle Ambient Background Gradient Glows */}
+          <div className="pointer-events-none absolute -top-10 -left-10 size-72 rounded-full bg-gradient-primary opacity-20 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-10 -right-10 size-72 rounded-full bg-gradient-primary opacity-25 blur-3xl" />
+
+          {/* Nav Items */}
+          <nav className="relative z-10 flex flex-col items-start gap-6 pt-4">
+            {nav.map((n) => (
+              <a
+                key={n.href}
+                href={n.href}
+                onClick={handleNavClick}
+                className="group font-display text-lg font-bold transition-opacity"
+              >
+                <span className=" text-white group-hover:opacity-80">
+                  {n.label}
+                </span>
+              </a>
+            ))}
+          </nav>
+
+          {/* CTA Button at Bottom */}
+          <div className="relative z-10 pb-10 pt-6 border-t border-white/10">
+            <GlowButton
+              size="md"
+              className="w-full justify-center"
+              onClick={() => {
+                setMobileOpen(false);
+                openLead("header-cta-mobile");
+              }}
+            >
+              Book Free Session
+            </GlowButton>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

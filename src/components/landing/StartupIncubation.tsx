@@ -5,11 +5,10 @@ import { GlowButton } from "./shared/GlowButton";
 import { incubationFeatures, incubationTracks } from "@/lib/landing/data";
 import { useLeadModal } from "./shared/LeadContext";
 import { Check, Rocket } from "lucide-react";
-
 export function StartupIncubation() {
   const { openLead } = useLeadModal();
   return (
-    <section className="relative py-24 sm:py-32">
+    <section className="relative py-12 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="Startup incubation"
@@ -18,7 +17,6 @@ export function StartupIncubation() {
           }
           subtitle="From validation to investor-ready — backed by mentors who've built and exited."
         />
-
         <div className="mt-14 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {incubationTracks.map((t, i) => (
@@ -31,7 +29,6 @@ export function StartupIncubation() {
               </ScrollReveal>
             ))}
           </div>
-
           <GlassCard className="glass-strong h-full">
             <p className="text-xs font-mono uppercase tracking-[0.2em] text-[color:var(--accent)]">
               What's included

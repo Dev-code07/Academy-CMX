@@ -3,12 +3,10 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { GlowButton } from "./shared/GlowButton";
 import { useLeadModal } from "./shared/LeadContext";
 import { Gift } from "lucide-react";
-
 export function ExitIntentModal() {
   const [open, setOpen] = useState(false);
   const [shown, setShown] = useState(false);
   const { openLead } = useLeadModal();
-
   useEffect(() => {
     if (shown) return;
     const onLeave = (e: MouseEvent) => {
@@ -30,16 +28,14 @@ export function ExitIntentModal() {
       window.removeEventListener("scroll", onScroll);
     };
   }, [shown]);
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent
-        
+      <DialogContent        
         className="max-w-lg glass-strong border-white/10 bg-[oklch(0.14_0.04_270)/0.96] p-0"
       >
         <DialogTitle className="sr-only">Free AI Career Report</DialogTitle>
         <div className="relative overflow-hidden rounded-2xl p-8 text-center">
-          <div className="absolute inset-0 -z-10 bg-gradient-glow opacity-10" />
+          <div className="absolute inset-0 -z-10 glass-strong opacity-10" />
           <div className="mx-auto mb-4 grid size-14 place-items-center rounded-full bg-gradient-primary shadow-glow">
             <Gift className="size-7" />
           </div>

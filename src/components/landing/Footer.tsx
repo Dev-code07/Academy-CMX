@@ -1,5 +1,4 @@
 import { SITE } from "@/lib/landing/config";
-
 export function Footer() {
   const cols = [
     {

@@ -3,10 +3,9 @@ import { SectionHeading } from "./shared/SectionHeading";
 import { ScrollReveal } from "./shared/ScrollReveal";
 import { careerServices } from "@/lib/landing/data";
 import { Check } from "lucide-react";
-
 export function CareerServices() {
   return (
-    <section className="relative py-24 sm:py-32">
+    <section className="relative py-12 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="Career services"

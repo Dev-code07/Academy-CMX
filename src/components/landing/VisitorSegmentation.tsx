@@ -7,7 +7,6 @@ import { GlowButton } from "./shared/GlowButton";
 import { useLeadModal } from "./shared/LeadContext";
 import { Check } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-
 export function VisitorSegmentation({
   active,
   onChange,
@@ -18,7 +17,7 @@ export function VisitorSegmentation({
   const { openLead } = useLeadModal();
   const current = personas.find((p) => p.id === active)!;
   return (
-    <section className="relative py-24 sm:py-32">
+    <section className="relative py-12 py-md-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="Choose your path"
@@ -58,7 +57,6 @@ export function VisitorSegmentation({
             </ScrollReveal>
           ))}
         </div>
-
         <AnimatePresence mode="wait">
           <motion.div
             key={current.id}

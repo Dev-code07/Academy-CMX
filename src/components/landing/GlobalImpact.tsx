@@ -2,18 +2,16 @@ import { SectionHeading } from "./shared/SectionHeading";
 import { ScrollReveal } from "./shared/ScrollReveal";
 import { globalCountries } from "@/lib/landing/data";
 import { AnimatedCounter } from "./shared/AnimatedCounter";
-
 export function GlobalImpact() {
   const total = globalCountries.reduce((a, b) => a + b.students, 0);
   return (
-    <section className="relative py-24 sm:py-32">
+    <section className="relative py-12 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="Global impact"
           title={<>Learners and businesses across <span className="text-gradient">30+ countries</span></>}
           subtitle="From Silicon Valley to Singapore — a global community building the next era of AI work."
         />
-
         <ScrollReveal>
           <div className="relative mt-14 aspect-[2/1] w-full overflow-hidden rounded-3xl border border-white/10 bg-[oklch(0.11_0.04_270)]">
             {/* Stylized dot world */}
@@ -32,7 +30,6 @@ export function GlobalImpact() {
                 }),
               )}
             </svg>
-
             {globalCountries.map((c) => (
               <div
                 key={c.code}
@@ -50,7 +47,6 @@ export function GlobalImpact() {
             ))}
           </div>
         </ScrollReveal>
-
         <div className="mt-10 grid gap-4 sm:grid-cols-4">
           {[
             { l: "Students", v: total },

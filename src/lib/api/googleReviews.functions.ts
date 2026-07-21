@@ -87,8 +87,6 @@ async function resolvePlaceId(apiKey: string, query: string) {
 
   throw new Error(`Unable to resolve placeId from query. originalQuery=${query}. lastError=${String(lastError)}`);
 }
-
-
 async function fetchPlaceDetails(apiKey: string, placeId: string) {
   const normalizedPlaceId = placeId.startsWith("places/") ? placeId.slice("places/".length) : placeId;
   const response = await fetch(

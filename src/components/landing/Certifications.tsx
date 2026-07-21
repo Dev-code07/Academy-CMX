@@ -3,17 +3,15 @@ import { SectionHeading } from "./shared/SectionHeading";
 import { ScrollReveal } from "./shared/ScrollReveal";
 import { certifications } from "@/lib/landing/data";
 import { Award, ShieldCheck } from "lucide-react";
-
 export function Certifications() {
   return (
-    <section className="relative py-24 sm:py-32">
+    <section className="relative py-12 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="Certifications"
           title={<>Industry-recognized <span className="text-gradient">certifications</span></>}
           subtitle="Stackable credentials that signal real, verifiable skill to employers and clients."
         />
-
         <div className="mt-14 grid gap-6 lg:grid-cols-[1fr_1.2fr]">
           {/* Premium certificate mock */}
           <ScrollReveal>
@@ -39,7 +37,6 @@ export function Certifications() {
               </div>
             </div>
           </ScrollReveal>
-
           <div className="grid gap-3 sm:grid-cols-2">
             {certifications.map((c, i) => (
               <ScrollReveal key={c.cat} delay={i * 0.04}>

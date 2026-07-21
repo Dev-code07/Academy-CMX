@@ -5,11 +5,10 @@ import { GlowButton } from "./shared/GlowButton";
 import { mentors } from "@/lib/landing/data";
 import { useLeadModal } from "./shared/LeadContext";
 import { Linkedin } from "lucide-react";
-
 export function Mentors() {
   const { openLead } = useLeadModal();
   return (
-    <section id="mentors" className="relative py-24 sm:py-32">
+    <section id="mentors" className="relative py-12 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="Mentors"
@@ -44,7 +43,6 @@ export function Mentors() {
             </ScrollReveal>
           ))}
         </div>
-
         <div className="mt-12 flex justify-center">
           <GlowButton onClick={() => openLead("mentors-all")}>See all 30+ mentors</GlowButton>
         </div>

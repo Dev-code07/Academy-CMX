@@ -4,19 +4,17 @@ import { SectionHeading } from "./shared/SectionHeading";
 import { stories } from "@/lib/landing/data";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-
 export function SuccessStories() {
   const [i, setI] = useState(0);
   const s = stories[i];
   return (
-    <section id="stories" className="relative py-24 sm:py-32">
+    <section id="stories" className="relative py-12 md:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="Success stories"
           title={<>Transformation <span className="text-gradient">stories</span></>}
           subtitle="Real learners. Real career switches. Real income jumps."
         />
-
         <div className="mt-14 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
           <GlassCard className="glass-strong relative overflow-hidden p-8 sm:p-10">
             <div className="absolute -right-10 -top-10 opacity-10">
@@ -44,7 +42,6 @@ export function SuccessStories() {
                 </div>
               </motion.div>
             </AnimatePresence>
-
             <div className="mt-8 flex items-center gap-2">
               <button
                 onClick={() => setI((i - 1 + stories.length) % stories.length)}
@@ -85,7 +82,6 @@ export function SuccessStories() {
     </section>
   );
 }
-
 function Pair({ k, v, accent }: { k: string; v: string; accent?: boolean }) {
   return (
     <div>

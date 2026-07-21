@@ -2,10 +2,9 @@ import { GlassCard } from "./shared/GlassCard";
 import { SectionHeading } from "./shared/SectionHeading";
 import { ScrollReveal } from "./shared/ScrollReveal";
 import { liveProjects } from "@/lib/landing/data";
-
 export function LiveProjects() {
   return (
-    <section id="projects" className="relative py-24 sm:py-32">
+    <section id="projects" className="relative py-12 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="Live industry projects"
@@ -35,7 +34,6 @@ export function LiveProjects() {
     </section>
   );
 }
-
 function Row({ k, v, accent }: { k: string; v: string; accent?: boolean }) {
   return (
     <div className="flex justify-between gap-3">

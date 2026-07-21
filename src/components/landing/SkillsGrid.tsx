@@ -1,11 +1,10 @@
 import { SectionHeading } from "./shared/SectionHeading";
 import { skills } from "@/lib/landing/data";
-
 export function SkillsGrid() {
   // duplicate for seamless marquee
   const row = [...skills, ...skills];
   return (
-    <section className="relative py-24 sm:py-32">
+    <section className="relative py-12 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="Skills you'll master"
@@ -13,7 +12,6 @@ export function SkillsGrid() {
           subtitle="A curriculum built around what's actually used at FAANG, frontier AI labs, and unicorn startups."
         />
       </div>
-
       <div className="relative mt-14 overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_10%,#000_90%,transparent)]">
         <div className="flex w-max gap-3 animate-marquee">
           {row.map((s, i) => (
@@ -26,7 +24,6 @@ export function SkillsGrid() {
           ))}
         </div>
       </div>
-
       <div className="mx-auto mt-8 grid max-w-7xl grid-cols-2 gap-2 px-4 sm:grid-cols-3 sm:px-6 md:grid-cols-4 lg:grid-cols-5">
         {skills.map((s) => (
           <div

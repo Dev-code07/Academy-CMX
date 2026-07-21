@@ -25,8 +25,6 @@ export async function sendLeadEmailViaResend(input: ResendSendInput) {
     });
     return { sent: false, missing };
   }
-
-  // At this point we know from is defined (validated above), but we narrow for TypeScript.
   const resendFrom = from;
 
   const resend = new Resend(apiKey);

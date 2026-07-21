@@ -19,7 +19,7 @@ function renderStars(rating: number) {
     <Star
       key={index}
       className={cn(
-        "size-4",
+        "size-5",
         index < rounded ? "text-yellow-400" : "text-slate-500/50",
       )}
     />
@@ -88,7 +88,7 @@ export function GoogleReviews() {
   }, [carouselApi, reviews.length]);
 
   return (
-    <section className="relative py-24 sm:py-32">
+    <section className="relative py-12 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="mb-10 text-center">
             <SectionHeading

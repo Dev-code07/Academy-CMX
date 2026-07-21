@@ -1,9 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-
 import { sendLeadEmailViaResend } from "./_mail.resend";
-
-// Server function to handle lead submissions. Sends an email to the profile-specific admin.
 export const submitLead = createServerFn({ method: "POST" })
   .inputValidator(
     z.object({

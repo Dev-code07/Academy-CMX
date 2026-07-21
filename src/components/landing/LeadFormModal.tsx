@@ -4,7 +4,6 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { GlowButton } from "./shared/GlowButton";
 import { Check, ChevronRight, Sparkles } from "lucide-react";
 import { submitLead } from "@/lib/api/leads.functions";
-
 const schema = z.object({
   goal: z.string().min(1).max(80),
   profile: z.string().min(1).max(80),
@@ -12,7 +11,6 @@ const schema = z.object({
   email: z.string().trim().email().max(160),
   phone: z.string().trim().min(7).max(20).regex(/^[+\d\s()-]+$/),
 });
-
 const goals = ["Land an AI job", "2x my salary", "Launch a startup", "Build an agency"];
 const profiles = ["Student", "Professional", "Freelancer", "Founder", "Career Switcher"];
 // Map profile -> admin email that should receive the lead
@@ -23,7 +21,6 @@ const adminEmails: Record<string, string> = {
   Founder: "founder@codexmattrix.com",
   "Career Switcher": "switcher@codexmattrix.com",
 };
-
 export function LeadFormModal({
   open,
   onClose,
@@ -40,7 +37,6 @@ export function LeadFormModal({
   const [done, setDone] = useState(false);
   const [emailSent, setEmailSent] = useState<boolean | null>(null);
   const [err, setErr] = useState<string | null>(null);
-
   const reset = () => {
     setStep(0);
     setData({ goal: "", profile: "", name: "", email: "", phone: "" });
@@ -48,13 +44,17 @@ export function LeadFormModal({
     setEmailSent(null);
     setErr(null);
   };
-
   useEffect(() => {
     if (open && payload) {
       // Prefill profile if provided in payload (e.g., from assessment)
       setData((d) => ({ ...d, profile: payload.profile ?? d.profile }));
     }
   }, [open, payload]);
+
+  // Goal options depend on the selected profile.
+  // Students shouldn't see "2x my salary" since it doesn't apply to them.
+  const availableGoals =
+    data.profile === "Student" ? goals.filter((g) => g !== "2x my salary") : goals;
 
   const submit = async () => {
     const parsed = schema.safeParse(data);
@@ -72,7 +72,6 @@ export function LeadFormModal({
       setErr("Submission failed. Please try again later.");
     }
   };
-
   return (
     <Dialog
       open={open}
@@ -83,8 +82,7 @@ export function LeadFormModal({
         }
       }}
     >
-      <DialogContent
-        
+      <DialogContent        
         className="max-w-lg  border-white/10 bg-[#000] p-0 shadow-elevated"
       >
         <DialogTitle className="sr-only">Book your career strategy session</DialogTitle>
@@ -123,33 +121,35 @@ export function LeadFormModal({
                     style={{ width: `${((step + 1) / 3) * 100}%` }}
                   />
                 </div>
-
                 {step === 0 && (
-                  <Step title="What's your primary goal?">
-                    <ChoiceGrid
-                      options={goals}
-                      value={data.goal}
-                      onPick={(v) => {
-                        setData({ ...data, goal: v });
-                        setStep(1);
-                      }}
-                    />
-                  </Step>
-                )}
-
-                {step === 1 && (
                   <Step title="What best describes you?">
                     <ChoiceGrid
                       options={profiles}
                       value={data.profile}
                       onPick={(v) => {
-                        setData({ ...data, profile: v });
+                        setData((d) => ({
+                          ...d,
+                          profile: v,
+                          // Clear a previously picked goal if it's no longer valid for this profile
+                          goal: v === "Student" && d.goal === "2x my salary" ? "" : d.goal,
+                        }));
+                        setStep(1);
+                      }}
+                    />
+                  </Step>
+                )}
+                {step === 1 && (
+                  <Step title="What's your primary goal?">
+                    <ChoiceGrid
+                      options={availableGoals}
+                      value={data.goal}
+                      onPick={(v) => {
+                        setData({ ...data, goal: v });
                         setStep(2);
                       }}
                     />
                   </Step>
                 )}
-
                 {step === 2 && (
                   <Step title="Where should we send your roadmap?">
                     <div className="space-y-3">
@@ -191,7 +191,6 @@ export function LeadFormModal({
                     </div>
                   </Step>
                 )}
-
                 {step > 0 && (
                   <button
                     type="button"
@@ -209,7 +208,6 @@ export function LeadFormModal({
     </Dialog>
   );
 }
-
 function Step({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
@@ -218,7 +216,6 @@ function Step({ title, children }: { title: string; children: React.ReactNode })
     </div>
   );
 }
-
 function ChoiceGrid({
   options,
   value,
@@ -247,7 +244,6 @@ function ChoiceGrid({
     </div>
   );
 }
-
 function Field({
   label,
   value,

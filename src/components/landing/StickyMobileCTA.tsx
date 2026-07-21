@@ -1,6 +1,5 @@
 import { GlowButton } from "./shared/GlowButton";
 import { useLeadModal } from "./shared/LeadContext";
-
 export function StickyMobileCTA() {
   const { openLead } = useLeadModal();
   return (

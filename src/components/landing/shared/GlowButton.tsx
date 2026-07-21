@@ -1,14 +1,11 @@
 import { cn } from "@/lib/utils";
 import { forwardRef, type ButtonHTMLAttributes } from "react";
-
 type Variant = "primary" | "ghost" | "outline";
 type Size = "md" | "lg";
-
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
   size?: Size;
 }
-
 export const GlowButton = forwardRef<HTMLButtonElement, Props>(
   ({ className, variant = "primary", size = "md", ...props }, ref) => {
     const base =

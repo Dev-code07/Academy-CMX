@@ -5,7 +5,6 @@ import { GlowButton } from "./shared/GlowButton";
 import { assessmentQuestions } from "@/lib/landing/data";
 import { useLeadModal } from "./shared/LeadContext";
 import { Sparkles, TrendingUp, Target, Clock } from "lucide-react";
-
 export function AssessmentFunnel({ profile }: { profile: string }) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -16,14 +15,11 @@ export function AssessmentFunnel({ profile }: { profile: string }) {
   const total = questions.length;
   const { openLead } = useLeadModal();
   const done = step >= total;
-
   useEffect(() => {
     setStep(0);
     setAnswers({});
   }, [profile]);
-
   const progress = Math.min(100, ((step) / total) * 100);
-
   const score = Math.min(98, 60 + Object.keys(answers).length * 7);
   const salary = "$95k–$185k";
   const path =
@@ -36,14 +32,13 @@ export function AssessmentFunnel({ profile }: { profile: string }) {
     answers.skill === "Complete beginner" ? "9–12 months" : answers.skill === "Advanced" ? "3–4 months" : "5–7 months";
 
   return (
-    <section id="assessment" className="relative py-24 sm:py-32">
+    <section id="assessment" className="relative py-12 md:py-24">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="AI Career Assessment"
           title={<>Discover your <span className="text-gradient">best AI career path</span></>}
           subtitle={`${total} quick questions. Get your match score, salary projection, and a personalised roadmap.`}
         />
-
         <div className="mt-12">
           <GlassCard className="glass-strong p-8 sm:p-10">
             {!done ? (
@@ -57,7 +52,6 @@ export function AssessmentFunnel({ profile }: { profile: string }) {
                 <div className="mb-8 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
                   <div className="h-full bg-gradient-primary transition-all duration-500" style={{ width: `${progress}%` }} />
                 </div>
-
                 <h3 className="text-2xl font-bold sm:text-3xl">{questions[step].q}</h3>
                 <div className="mt-6 grid gap-2.5 sm:grid-cols-2">
                   {questions[step].options.map((o) => (

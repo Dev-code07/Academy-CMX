@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "motion/react";
-
 export function AnimatedCounter({
   to,
   duration = 1500,
@@ -29,7 +28,6 @@ export function AnimatedCounter({
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [inView, to, duration]);
-
   return (
     <span ref={ref}>
       {prefix}
