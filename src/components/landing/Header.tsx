@@ -123,7 +123,7 @@ export function Header() {
 
       {/* Mobile Overlay Menu */}
       {mobileOpen && (
-        <div className="relative fixed inset-x-0 top-0 bottom-0 z-40 flex h-[calc(55vh-4rem)] flex-col justify-between overflow-hidden bg-[oklch(0.1_0.04_270)] p-6 md:hidden">
+        <div className="relative fixed inset-x-0 top-0 bottom-0 z-40 flex h-[calc(70vh-4rem)] flex-col justify-between overflow-hidden bg-[oklch(0.1_0.04_270)] p-6 md:hidden">
           {/* Subtle Ambient Background Gradient Glows */}
           <div className="pointer-events-none absolute -top-10 -left-10 size-72 rounded-full bg-gradient-primary opacity-20 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-10 -right-10 size-72 rounded-full bg-gradient-primary opacity-25 blur-3xl" />
