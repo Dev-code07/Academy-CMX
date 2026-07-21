@@ -12,18 +12,48 @@ const PLACE_ID = "ChIJeX4B2pHnfYERMl8xVZ9N0dk";
 // Update this if the address or name changes.
 const PLACE_QUERY = "CodeXmattriX Academy, Dharamshala, Himachal Pradesh";
 
+const WORD_LIMIT = 25;
 
 function renderStars(rating: number) {
   const rounded = Math.round(rating);
-  return Array.from({ length: 5 }).map((_, index) => (
-    <Star
-      key={index}
-      className={cn(
-        "size-5",
-        index < rounded ? "text-yellow-400" : "text-slate-500/50",
-      )}
-    />
-  ));
+  return Array.from({ length: 5 }).map(function (_, index) {
+    const filled = index < rounded;
+    return (
+      <Star
+        key={index}
+        className={cn("size-5", filled ? "text-yellow-400" : "text-slate-500/50")}
+        fill={filled ? "currentColor" : "none"}
+        strokeWidth={filled ? 0 : 1.5}
+      />
+    );
+  });
+}
+
+function ReviewText({ text }: { text: string }) {
+  const [expanded, setExpanded] = React.useState(false);
+
+  const words = text.trim().split(/\s+/);
+  const isLong = words.length > WORD_LIMIT;
+  const preview = words.slice(0, WORD_LIMIT).join(" ");
+
+  return (
+    <p className="mt-4 text-sm leading-6 text-slate-300">
+      {expanded || !isLong ? text : preview + "..."}
+      {isLong ? (
+        <button
+          type="button"
+          onClick={function () {
+            setExpanded(function (prev) {
+              return !prev;
+            });
+          }}
+          className="ml-1 font-semibold text-gradient hover:underline"
+        >
+          {expanded ? "Read less" : "Read more"}
+        </button>
+      ) : null}
+    </p>
+  );
 }
 
 export function GoogleReviews() {
@@ -91,11 +121,11 @@ export function GoogleReviews() {
     <section className="relative py-12 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="mb-10 text-center">
-            <SectionHeading
-                      eyebrow="Google reviews"
-                      title={<> What our  <span className="text-gradient">learners say</span></>}
-                      subtitle="Real feedback from students and alumni on our training and placement support."
-                    />
+          <SectionHeading
+            eyebrow="Google reviews"
+            title={<> What our <span className="text-gradient">learners say</span></>}
+            subtitle="Real feedback from students and alumni on our training and placement support."
+          />
         </div>
 
         {loading ? (
@@ -144,7 +174,7 @@ export function GoogleReviews() {
                       </div>
                     </div>
                     <div className="mt-4 flex gap-1">{renderStars(review.rating)}</div>
-                    <p className="mt-4 text-sm leading-6 text-slate-300">{review.text}</p>
+                    <ReviewText text={review.text} />
                   </div>
                 </CarouselItem>
               ))}
