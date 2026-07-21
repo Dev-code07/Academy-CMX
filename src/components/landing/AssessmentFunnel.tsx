@@ -5,20 +5,34 @@ import { GlowButton } from "./shared/GlowButton";
 import { assessmentQuestions } from "@/lib/landing/data";
 import { useLeadModal } from "./shared/LeadContext";
 import { Sparkles, TrendingUp, Target, Clock } from "lucide-react";
+
 export function AssessmentFunnel({ profile }: { profile: string }) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  const questions =
-    profile === "student"
-      ? assessmentQuestions.filter((question) => question.id !== "salary")
-      : assessmentQuestions;
+  const isStudent = profile === "student";
+
+  const questions = (isStudent
+    ? assessmentQuestions.filter((question) => question.id !== "salary")
+    : assessmentQuestions
+  ).map((question) => {
+    if (!isStudent) return question;
+    return {
+      ...question,
+      options: question.options.filter(
+        (o) => !o.toLowerCase().includes("salary")
+      ),
+    };
+  });
+
   const total = questions.length;
   const { openLead } = useLeadModal();
   const done = step >= total;
+
   useEffect(() => {
     setStep(0);
     setAnswers({});
   }, [profile]);
+
   const progress = Math.min(100, ((step) / total) * 100);
   const score = Math.min(98, 60 + Object.keys(answers).length * 7);
   const salary = "$95k–$185k";
@@ -88,8 +102,10 @@ export function AssessmentFunnel({ profile }: { profile: string }) {
                   Match score:{" "}
                   <span className="text-gradient">{score}%</span>
                 </h3>
-                <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                  <Stat icon={<TrendingUp className="size-5" />} label="Salary projection" value={salary} />
+                <div className={`mt-8 grid gap-4 ${isStudent ? "sm:grid-cols-2" : "sm:grid-cols-3"}`}>
+                  {!isStudent && (
+                    <Stat icon={<TrendingUp className="size-5" />} label="Salary projection" value={salary} />
+                  )}
                   <Stat icon={<Target className="size-5" />} label="Recommended path" value={path} />
                   <Stat icon={<Clock className="size-5" />} label="Timeline to success" value={timeline} />
                 </div>

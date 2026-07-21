@@ -4,12 +4,8 @@ import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext
 import { getGoogleReviews } from "@/lib/api/googleReviews.functions";
 import { cn } from "@/lib/utils";
 import { SectionHeading } from "./shared/SectionHeading";
-
-// If you know the exact Google Place ID, paste it here.
 const PLACE_ID = "ChIJeX4B2pHnfYERMl8xVZ9N0dk";
 
-// Fallback query for finding your business in Google Places.
-// Update this if the address or name changes.
 const PLACE_QUERY = "CodeXmattriX Academy, Dharamshala, Himachal Pradesh";
 
 const WORD_LIMIT = 25;
