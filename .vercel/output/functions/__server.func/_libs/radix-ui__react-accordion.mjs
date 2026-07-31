@@ -8,35 +8,38 @@ import { P as Primitive } from "./radix-ui__react-primitive.mjs";
 import { R as Root, T as Trigger, C as Content, c as createCollapsibleScope } from "./radix-ui__react-collapsible.mjs";
 import { u as useId } from "./radix-ui__react-id.mjs";
 import { u as useDirection } from "./radix-ui__react-direction.mjs";
+var __defProp = Object.defineProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 var ACCORDION_NAME = "Accordion";
 var ACCORDION_KEYS = ["Home", "End", "ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"];
 var [Collection, useCollection, createCollectionScope] = createCollection(ACCORDION_NAME);
-var [createAccordionContext] = createContextScope(ACCORDION_NAME, [
+var [createAccordionContext, createAccordionScope] = createContextScope(ACCORDION_NAME, [
   createCollectionScope,
   createCollapsibleScope
 ]);
 var useCollapsibleScope = createCollapsibleScope();
-var Accordion = reactExports.forwardRef(
-  (props, forwardedRef) => {
+var Accordion = /* @__PURE__ */ reactExports.forwardRef(
+  // blank line to reduce diff noise
+  /* @__PURE__ */ __name(function Accordion2(props, forwardedRef) {
     const { type, ...accordionProps } = props;
     const singleProps = accordionProps;
     const multipleProps = accordionProps;
     return /* @__PURE__ */ jsxRuntimeExports.jsx(Collection.Provider, { scope: props.__scopeAccordion, children: type === "multiple" ? /* @__PURE__ */ jsxRuntimeExports.jsx(AccordionImplMultiple, { ...multipleProps, ref: forwardedRef }) : /* @__PURE__ */ jsxRuntimeExports.jsx(AccordionImplSingle, { ...singleProps, ref: forwardedRef }) });
-  }
+  }, "Accordion")
 );
-Accordion.displayName = ACCORDION_NAME;
 var [AccordionValueProvider, useAccordionValueContext] = createAccordionContext(ACCORDION_NAME);
 var [AccordionCollapsibleProvider, useAccordionCollapsibleContext] = createAccordionContext(
   ACCORDION_NAME,
   { collapsible: false }
 );
-var AccordionImplSingle = reactExports.forwardRef(
-  (props, forwardedRef) => {
+var AccordionImplSingle = /* @__PURE__ */ reactExports.forwardRef(
+  // blank line to reduce diff noise
+  /* @__PURE__ */ __name(function AccordionImplSingle2(props, forwardedRef) {
     const {
       value: valueProp,
       defaultValue,
-      onValueChange = () => {
-      },
+      onValueChange = /* @__PURE__ */ __name(() => {
+      }, "onValueChange"),
       collapsible = false,
       ...accordionSingleProps
     } = props;
@@ -56,14 +59,14 @@ var AccordionImplSingle = reactExports.forwardRef(
         children: /* @__PURE__ */ jsxRuntimeExports.jsx(AccordionCollapsibleProvider, { scope: props.__scopeAccordion, collapsible, children: /* @__PURE__ */ jsxRuntimeExports.jsx(AccordionImpl, { ...accordionSingleProps, ref: forwardedRef }) })
       }
     );
-  }
+  }, "AccordionImplSingle")
 );
-var AccordionImplMultiple = reactExports.forwardRef((props, forwardedRef) => {
+var AccordionImplMultiple = /* @__PURE__ */ reactExports.forwardRef(/* @__PURE__ */ __name(function AccordionImplMultiple2(props, forwardedRef) {
   const {
     value: valueProp,
     defaultValue,
-    onValueChange = () => {
-    },
+    onValueChange = /* @__PURE__ */ __name(() => {
+    }, "onValueChange"),
     ...accordionMultipleProps
   } = props;
   const [value, setValue] = useControllableState({
@@ -90,10 +93,10 @@ var AccordionImplMultiple = reactExports.forwardRef((props, forwardedRef) => {
       children: /* @__PURE__ */ jsxRuntimeExports.jsx(AccordionCollapsibleProvider, { scope: props.__scopeAccordion, collapsible: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(AccordionImpl, { ...accordionMultipleProps, ref: forwardedRef }) })
     }
   );
-});
+}, "AccordionImplMultiple"));
 var [AccordionImplProvider, useAccordionContext] = createAccordionContext(ACCORDION_NAME);
-var AccordionImpl = reactExports.forwardRef(
-  (props, forwardedRef) => {
+var AccordionImpl = /* @__PURE__ */ reactExports.forwardRef(
+  /* @__PURE__ */ __name(function AccordionImpl2(props, forwardedRef) {
     const { __scopeAccordion, disabled, dir, orientation = "vertical", ...accordionProps } = props;
     const accordionRef = reactExports.useRef(null);
     const composedRefs = useComposedRefs(accordionRef, forwardedRef);
@@ -111,18 +114,18 @@ var AccordionImpl = reactExports.forwardRef(
       let nextIndex = triggerIndex;
       const homeIndex = 0;
       const endIndex = triggerCount - 1;
-      const moveNext = () => {
+      const moveNext = /* @__PURE__ */ __name(() => {
         nextIndex = triggerIndex + 1;
         if (nextIndex > endIndex) {
           nextIndex = homeIndex;
         }
-      };
-      const movePrev = () => {
+      }, "moveNext");
+      const movePrev = /* @__PURE__ */ __name(() => {
         nextIndex = triggerIndex - 1;
         if (nextIndex < homeIndex) {
           nextIndex = endIndex;
         }
-      };
+      }, "movePrev");
       switch (event.key) {
         case "Home":
           nextIndex = homeIndex;
@@ -180,12 +183,12 @@ var AccordionImpl = reactExports.forwardRef(
         ) })
       }
     );
-  }
+  }, "AccordionImpl")
 );
 var ITEM_NAME = "AccordionItem";
 var [AccordionItemProvider, useAccordionItemContext] = createAccordionContext(ITEM_NAME);
-var AccordionItem = reactExports.forwardRef(
-  (props, forwardedRef) => {
+var AccordionItem = /* @__PURE__ */ reactExports.forwardRef(
+  /* @__PURE__ */ __name(function AccordionItem2(props, forwardedRef) {
     const { __scopeAccordion, value, ...accordionItemProps } = props;
     const accordionContext = useAccordionContext(ITEM_NAME, __scopeAccordion);
     const valueContext = useAccordionValueContext(ITEM_NAME, __scopeAccordion);
@@ -221,12 +224,12 @@ var AccordionItem = reactExports.forwardRef(
         )
       }
     );
-  }
+  }, "AccordionItem")
 );
-AccordionItem.displayName = ITEM_NAME;
 var HEADER_NAME = "AccordionHeader";
-var AccordionHeader = reactExports.forwardRef(
-  (props, forwardedRef) => {
+var AccordionHeader = /* @__PURE__ */ reactExports.forwardRef(
+  // blank line to reduce diff noise
+  /* @__PURE__ */ __name(function AccordionHeader2(props, forwardedRef) {
     const { __scopeAccordion, ...headerProps } = props;
     const accordionContext = useAccordionContext(ACCORDION_NAME, __scopeAccordion);
     const itemContext = useAccordionItemContext(HEADER_NAME, __scopeAccordion);
@@ -240,12 +243,12 @@ var AccordionHeader = reactExports.forwardRef(
         ref: forwardedRef
       }
     );
-  }
+  }, "AccordionHeader")
 );
-AccordionHeader.displayName = HEADER_NAME;
 var TRIGGER_NAME = "AccordionTrigger";
-var AccordionTrigger = reactExports.forwardRef(
-  (props, forwardedRef) => {
+var AccordionTrigger = /* @__PURE__ */ reactExports.forwardRef(
+  // blank line to reduce diff noise
+  /* @__PURE__ */ __name(function AccordionTrigger2(props, forwardedRef) {
     const { __scopeAccordion, ...triggerProps } = props;
     const accordionContext = useAccordionContext(ACCORDION_NAME, __scopeAccordion);
     const itemContext = useAccordionItemContext(TRIGGER_NAME, __scopeAccordion);
@@ -262,12 +265,12 @@ var AccordionTrigger = reactExports.forwardRef(
         ref: forwardedRef
       }
     ) });
-  }
+  }, "AccordionTrigger")
 );
-AccordionTrigger.displayName = TRIGGER_NAME;
 var CONTENT_NAME = "AccordionContent";
-var AccordionContent = reactExports.forwardRef(
-  (props, forwardedRef) => {
+var AccordionContent = /* @__PURE__ */ reactExports.forwardRef(
+  // blank line to reduce diff noise
+  /* @__PURE__ */ __name(function AccordionContent2(props, forwardedRef) {
     const { __scopeAccordion, ...contentProps } = props;
     const accordionContext = useAccordionContext(ACCORDION_NAME, __scopeAccordion);
     const itemContext = useAccordionItemContext(CONTENT_NAME, __scopeAccordion);
@@ -288,12 +291,12 @@ var AccordionContent = reactExports.forwardRef(
         }
       }
     );
-  }
+  }, "AccordionContent")
 );
-AccordionContent.displayName = CONTENT_NAME;
 function getState(open) {
   return open ? "open" : "closed";
 }
+__name(getState, "getState");
 var Root2 = Accordion;
 var Item = AccordionItem;
 var Header = AccordionHeader;

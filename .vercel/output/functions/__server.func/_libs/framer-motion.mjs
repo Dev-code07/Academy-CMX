@@ -92,7 +92,7 @@ function PopChild({ children, isPresent, anchorX, anchorY, root, pop }) {
     direction: "ltr"
   });
   const { nonce } = reactExports.useContext(MotionConfigContext);
-  const childRef = children.props?.ref ?? children?.ref;
+  const childRef = pop !== false ? children.props?.ref ?? children?.ref : void 0;
   const composedRef = useComposedRefs(ref, childRef);
   reactExports.useInsertionEffect(() => {
     const { width, height, top, left, right, bottom, direction } = size.current;
@@ -130,6 +130,12 @@ function PopChild({ children, isPresent, anchorX, anchorY, root, pop }) {
 const PresenceChild = ({ children, initial, isPresent, onExitComplete, custom, presenceAffectsLayout, mode, anchorX, anchorY, root }) => {
   const presenceChildren = useConstant(newChildrenMap);
   const id2 = reactExports.useId();
+  const isPresentRef = reactExports.useRef(isPresent);
+  const onExitCompleteRef = reactExports.useRef(onExitComplete);
+  useIsomorphicLayoutEffect(() => {
+    isPresentRef.current = isPresent;
+    onExitCompleteRef.current = onExitComplete;
+  });
   let isReusedContext = true;
   let context = reactExports.useMemo(() => {
     isReusedContext = false;
@@ -148,7 +154,10 @@ const PresenceChild = ({ children, initial, isPresent, onExitComplete, custom, p
       },
       register: (childId) => {
         presenceChildren.set(childId, false);
-        return () => presenceChildren.delete(childId);
+        return () => {
+          presenceChildren.delete(childId);
+          !isPresentRef.current && !presenceChildren.size && onExitCompleteRef.current?.();
+        };
       }
     };
   }, [isPresent, presenceChildren, onExitComplete]);
@@ -975,7 +984,8 @@ class PanSession {
     this.history = [{ ...point, timestamp }];
     const { onSessionStart } = handlers;
     onSessionStart && onSessionStart(event, getPanInfo(initialInfo, this.history));
-    this.removeListeners = pipe(addPointerEvent(this.contextWindow, "pointermove", this.handlePointerMove), addPointerEvent(this.contextWindow, "pointerup", this.handlePointerUp), addPointerEvent(this.contextWindow, "pointercancel", this.handlePointerUp));
+    const eventOptions = { passive: true, capture: true };
+    this.removeListeners = pipe(addPointerEvent(this.contextWindow, "pointermove", this.handlePointerMove, eventOptions), addPointerEvent(this.contextWindow, "pointerup", this.handlePointerUp, eventOptions), addPointerEvent(this.contextWindow, "pointercancel", this.handlePointerUp, eventOptions));
     if (element) {
       this.startScrollTracking(element);
     }

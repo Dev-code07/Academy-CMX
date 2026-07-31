@@ -1,6 +1,13 @@
 import { r as reactExports } from "./react.mjs";
+var __defProp = Object.defineProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 var count = 0;
 var guards = null;
+function FocusGuards(props) {
+  useFocusGuards();
+  return props.children;
+}
+__name(FocusGuards, "FocusGuards");
 function useFocusGuards() {
   reactExports.useEffect(() => {
     if (!guards) {
@@ -24,6 +31,7 @@ function useFocusGuards() {
     };
   }, []);
 }
+__name(useFocusGuards, "useFocusGuards");
 function createFocusGuard() {
   const element = document.createElement("span");
   element.setAttribute("data-radix-focus-guard", "");
@@ -34,6 +42,7 @@ function createFocusGuard() {
   element.style.pointerEvents = "none";
   return element;
 }
+__name(createFocusGuard, "createFocusGuard");
 export {
   useFocusGuards as u
 };

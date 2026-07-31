@@ -17,7 +17,7 @@ const stepsOrder = [
   "postRender"
   // Compute
 ];
-function createRenderStep(runNextFrame, stepName) {
+function createRenderStep(runNextFrame) {
   let thisFrame = /* @__PURE__ */ new Set();
   let nextFrame = /* @__PURE__ */ new Set();
   let isProcessing = false;
@@ -1598,8 +1598,7 @@ function startWaapiAnimation(element, valueName, keyframes2, { delay: delay2 = 0
   };
   if (pseudoElement)
     options.pseudoElement = pseudoElement;
-  const animation = element.animate(keyframeOptions, options);
-  return animation;
+  return element.animate(keyframeOptions, options);
 }
 function isGenerator(type) {
   return typeof type === "function" && "applyToOptions" in type;
@@ -1859,10 +1858,8 @@ const acceleratedValues = /* @__PURE__ */ new Set([
   "opacity",
   "clipPath",
   "filter",
-  "transform"
-  // TODO: Can be accelerated but currently disabled until https://issues.chromium.org/issues/41491098 is resolved
-  // or until we implement support for linear() easing.
-  // "background-color"
+  "transform",
+  "backgroundColor"
 ]);
 const browserColorFunctions = /^(?:oklch|oklab|lab|lch|color|color-mix|light-dark)\(/;
 function hasBrowserOnlyColors(keyframes2) {
@@ -1889,7 +1886,7 @@ const supportsWaapi = /* @__PURE__ */ memo(() => Object.hasOwnProperty.call(Elem
 function supportsBrowserAnimation(options) {
   const { motionValue: motionValue2, name, repeatDelay, repeatType, damping, type, keyframes: keyframes2 } = options;
   const subject = motionValue2?.owner?.current;
-  if (!(subject instanceof HTMLElement)) {
+  if (!(subject instanceof HTMLElement) && !(subject instanceof SVGElement)) {
     return false;
   }
   const { onUpdate, transformTemplate } = motionValue2.owner.getProps();
@@ -2940,6 +2937,12 @@ class DOMKeyframesResolver extends KeyframeResolver {
     this.resolveNoneKeyframes();
   }
 }
+const cornerRadiusProps = [
+  "borderTopLeftRadius",
+  "borderTopRightRadius",
+  "borderBottomRightRadius",
+  "borderBottomLeftRadius"
+];
 function resolveElements(elementOrSelector, scope, selectorCache) {
   if (elementOrSelector == null) {
     return [];
@@ -3132,9 +3135,10 @@ function press(targetOrSelector, onPressStart, options = {}) {
       claimedPointerDownEvents.add(startEvent);
     }
     const onPressEnd = onPressStart(target, startEvent);
+    const endEventOptions = { ...eventOptions, capture: true };
     const onPointerEnd = (endEvent, success) => {
-      window.removeEventListener("pointerup", onPointerUp);
-      window.removeEventListener("pointercancel", onPointerCancel);
+      window.removeEventListener("pointerup", onPointerUp, endEventOptions);
+      window.removeEventListener("pointercancel", onPointerCancel, endEventOptions);
       if (isPressing.has(target)) {
         isPressing.delete(target);
       }
@@ -3151,8 +3155,8 @@ function press(targetOrSelector, onPressStart, options = {}) {
     const onPointerCancel = (cancelEvent) => {
       onPointerEnd(cancelEvent, false);
     };
-    window.addEventListener("pointerup", onPointerUp, eventOptions);
-    window.addEventListener("pointercancel", onPointerCancel, eventOptions);
+    window.addEventListener("pointerup", onPointerUp, endEventOptions);
+    window.addEventListener("pointercancel", onPointerCancel, endEventOptions);
   };
   targets.forEach((target) => {
     const pointerDownTarget = options.useGlobalTarget ? window : target;
@@ -4034,12 +4038,7 @@ const correctBoxShadow = {
 const scaleCorrectors = {
   borderRadius: {
     ...correctBorderRadius,
-    applyTo: [
-      "borderTopLeftRadius",
-      "borderTopRightRadius",
-      "borderBottomLeftRadius",
-      "borderBottomRightRadius"
-    ]
+    applyTo: [...cornerRadiusProps]
   },
   borderTopLeftRadius: correctBorderRadius,
   borderTopRightRadius: correctBorderRadius,
@@ -4071,6 +4070,10 @@ class HTMLVisualElement extends DOMVisualElement {
     super(...arguments);
     this.type = "html";
     this.renderInstance = renderHTML;
+  }
+  mount(instance) {
+    invariant(Boolean(instance.style));
+    super.mount(instance);
   }
   readValueFromInstance(instance, key) {
     if (transformProps.has(key)) {
@@ -4629,13 +4632,7 @@ function buildProjectionTransform(delta, treeScale, latestTransform) {
   }
   return transform || "none";
 }
-const borderLabels = [
-  "borderTopLeftRadius",
-  "borderTopRightRadius",
-  "borderBottomLeftRadius",
-  "borderBottomRightRadius"
-];
-const numBorders = borderLabels.length;
+const numBorders = cornerRadiusProps.length;
 const asNumber = (value) => typeof value === "string" ? parseFloat(value) : value;
 const isPx = (value) => typeof value === "number" || px.test(value);
 function mixValues(target, follow, lead, progress2, shouldCrossfadeOpacity, isOnlyMember) {
@@ -4646,7 +4643,7 @@ function mixValues(target, follow, lead, progress2, shouldCrossfadeOpacity, isOn
     target.opacity = mixNumber$1(follow.opacity ?? 1, lead.opacity ?? 1, progress2);
   }
   for (let i = 0; i < numBorders; i++) {
-    const borderLabel = borderLabels[i];
+    const borderLabel = cornerRadiusProps[i];
     let followRadius = getRadius(follow, borderLabel);
     let leadRadius = getRadius(lead, borderLabel);
     if (followRadius === void 0 && leadRadius === void 0)
@@ -4688,7 +4685,7 @@ function animateSingleValue(value, keyframes2, options) {
 }
 function addDomEvent(target, eventName, handler, options = { passive: true }) {
   target.addEventListener(eventName, handler, options);
-  return () => target.removeEventListener(eventName, handler);
+  return () => target.removeEventListener(eventName, handler, options);
 }
 const compareByDepth = (a, b) => a.depth - b.depth;
 class FlatTree {
@@ -5536,8 +5533,6 @@ function createProjectionNode({ attachResizeListener, defaultParent, measureScro
           onUpdate: (latest) => {
             this.mixTargetDelta(latest);
             options.onUpdate && options.onUpdate(latest);
-          },
-          onStop: () => {
           },
           onComplete: () => {
             options.onComplete && options.onComplete();

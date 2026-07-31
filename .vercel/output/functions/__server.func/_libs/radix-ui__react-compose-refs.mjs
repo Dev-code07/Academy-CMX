@@ -1,4 +1,6 @@
 import { r as reactExports } from "./react.mjs";
+var __defProp = Object.defineProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 function setRef(ref, value) {
   if (typeof ref === "function") {
     return ref(value);
@@ -6,6 +8,7 @@ function setRef(ref, value) {
     ref.current = value;
   }
 }
+__name(setRef, "setRef");
 function composeRefs(...refs) {
   return (node) => {
     let hasCleanup = false;
@@ -30,9 +33,11 @@ function composeRefs(...refs) {
     }
   };
 }
+__name(composeRefs, "composeRefs");
 function useComposedRefs(...refs) {
   return reactExports.useCallback(composeRefs(...refs), refs);
 }
+__name(useComposedRefs, "useComposedRefs");
 export {
   useComposedRefs as u
 };

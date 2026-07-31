@@ -1,25 +1,28 @@
 import { r as reactExports } from "./react.mjs";
 import { u as useLayoutEffect2 } from "./@radix-ui/react-use-layout-effect+[...].mjs";
+var __defProp = Object.defineProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 function useStateMachine(initialState, machine) {
   return reactExports.useReducer((state, event) => {
     const nextState = machine[state][event];
     return nextState ?? state;
   }, initialState);
 }
-var Presence = (props) => {
+__name(useStateMachine, "useStateMachine");
+var Presence = /* @__PURE__ */ __name((props) => {
   const { present, children } = props;
   const presence = usePresence(present);
   const child = typeof children === "function" ? children({ present: presence.isPresent }) : reactExports.Children.only(children);
   const ref = useStableComposedRefs(presence.ref, getElementRef(child));
   const forceMount = typeof children === "function";
   return forceMount || presence.isPresent ? reactExports.cloneElement(child, { ref }) : null;
-};
-Presence.displayName = "Presence";
+}, "Presence");
 function usePresence(present) {
   const [node, setNode] = reactExports.useState();
   const stylesRef = reactExports.useRef(null);
   const prevPresentRef = reactExports.useRef(present);
   const prevAnimationNameRef = reactExports.useRef("none");
+  const mountAnimationNameRef = reactExports.useRef(void 0);
   const initialState = present ? "mounted" : "unmounted";
   const [state, send] = useStateMachine(initialState, {
     mounted: {
@@ -35,8 +38,12 @@ function usePresence(present) {
     }
   });
   reactExports.useEffect(() => {
-    const currentAnimationName = getAnimationName(stylesRef.current);
-    prevAnimationNameRef.current = state === "mounted" ? currentAnimationName : "none";
+    if (state === "mounted") {
+      prevAnimationNameRef.current = mountAnimationNameRef.current ?? getAnimationName(stylesRef.current);
+      mountAnimationNameRef.current = void 0;
+    } else {
+      prevAnimationNameRef.current = "none";
+    }
   }, [state]);
   useLayoutEffect2(() => {
     const styles = stylesRef.current;
@@ -46,6 +53,7 @@ function usePresence(present) {
       const prevAnimationName = prevAnimationNameRef.current;
       const currentAnimationName = getAnimationName(styles);
       if (present) {
+        mountAnimationNameRef.current = currentAnimationName;
         send("MOUNT");
       } else if (currentAnimationName === "none" || styles?.display === "none") {
         send("UNMOUNT");
@@ -64,7 +72,7 @@ function usePresence(present) {
     if (node) {
       let timeoutId;
       const ownerWindow = node.ownerDocument.defaultView ?? window;
-      const handleAnimationEnd = (event) => {
+      const handleAnimationEnd = /* @__PURE__ */ __name((event) => {
         const currentAnimationName = getAnimationName(stylesRef.current);
         const isCurrentAnimation = currentAnimationName.includes(CSS.escape(event.animationName));
         if (event.target === node && isCurrentAnimation) {
@@ -79,12 +87,12 @@ function usePresence(present) {
             });
           }
         }
-      };
-      const handleAnimationStart = (event) => {
+      }, "handleAnimationEnd");
+      const handleAnimationStart = /* @__PURE__ */ __name((event) => {
         if (event.target === node) {
           prevAnimationNameRef.current = getAnimationName(stylesRef.current);
         }
-      };
+      }, "handleAnimationStart");
       node.addEventListener("animationstart", handleAnimationStart);
       node.addEventListener("animationcancel", handleAnimationEnd);
       node.addEventListener("animationend", handleAnimationEnd);
@@ -101,11 +109,18 @@ function usePresence(present) {
   return {
     isPresent: ["mounted", "unmountSuspended"].includes(state),
     ref: reactExports.useCallback((node2) => {
-      stylesRef.current = node2 ? getComputedStyle(node2) : null;
+      if (node2) {
+        const styles = getComputedStyle(node2);
+        stylesRef.current = styles;
+        mountAnimationNameRef.current = getAnimationName(styles);
+      } else {
+        stylesRef.current = null;
+      }
       setNode(node2);
     }, [])
   };
 }
+__name(usePresence, "usePresence");
 function setRef(ref, value) {
   if (typeof ref === "function") {
     return ref(value);
@@ -113,6 +128,7 @@ function setRef(ref, value) {
     ref.current = value;
   }
 }
+__name(setRef, "setRef");
 function useStableComposedRefs(...refs) {
   const refsRef = reactExports.useRef(refs);
   refsRef.current = refs;
@@ -140,9 +156,11 @@ function useStableComposedRefs(...refs) {
     }
   }, []);
 }
+__name(useStableComposedRefs, "useStableComposedRefs");
 function getAnimationName(styles) {
   return styles?.animationName || "none";
 }
+__name(getAnimationName, "getAnimationName");
 function getElementRef(element) {
   let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
   let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
@@ -156,6 +174,7 @@ function getElementRef(element) {
   }
   return element.props.ref || element.ref;
 }
+__name(getElementRef, "getElementRef");
 export {
   Presence as P
 };

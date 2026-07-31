@@ -1,7 +1,7 @@
 import { p as parseHref } from "./tanstack__history.mjs";
 import { s as splitSetCookieString } from "./cookie-es.mjs";
-import { a as ai, r as re, S as Sn, d as dn } from "./seroval.mjs";
-import { p } from "./seroval-plugins.mjs";
+import { c as createPlugin, a as createStream, b as crossSerializeStream, g as getCrossReferenceHeader } from "./seroval.mjs";
+import { R as ReadableStreamPlugin } from "./seroval-plugins.mjs";
 import { ReadableStream as ReadableStream$1 } from "node:stream/web";
 import { Readable } from "node:stream";
 const isServer = true;
@@ -92,8 +92,9 @@ function isModuleNotFoundError(error) {
 function isPromise(value) {
   return Boolean(value && typeof value === "object" && typeof value.then === "function");
 }
+const PATH_UNSAFE_RE = /[\x00-\x1f\x7f"<>`{}]/g;
 function sanitizePathSegment(segment) {
-  return segment.replace(/[\x00-\x1f\x7f]/g, "");
+  return segment.replace(PATH_UNSAFE_RE, (ch) => "%" + ch.charCodeAt(0).toString(16).toUpperCase().padStart(2, "0"));
 }
 function decodeSegment(segment) {
   let decoded;
@@ -145,13 +146,13 @@ function decodePath(path) {
     path,
     handledProtocolRelativeURL: false
   };
-  const re2 = /%25|%5C/gi;
+  const re = /%25|%5C/gi;
   let cursor = 0;
   let result = "";
   let match;
-  while (null !== (match = re2.exec(path))) {
+  while (null !== (match = re.exec(path))) {
     result += decodeSegment(path.slice(cursor, match.index)) + match[0];
-    cursor = re2.lastIndex;
+    cursor = re.lastIndex;
   }
   result = result + decodeSegment(cursor ? path.slice(cursor) : path);
   let handledProtocolRelativeURL = false;
@@ -1118,6 +1119,18 @@ function encodePathParam(value, decoder) {
 function isNotFound(obj) {
   return obj?.isNotFound === true;
 }
+function getSafeSessionStorage() {
+  try {
+    return sessionStorage;
+  } catch {
+    return;
+  }
+}
+const storageKey = "tsr-scroll-restoration-v1_3";
+getSafeSessionStorage();
+const defaultGetScrollRestorationKey = (location) => {
+  return location.state.__TSR_key || location.href;
+};
 function encode(obj, stringify = String) {
   const result = new URLSearchParams();
   for (const key in obj) {
@@ -1204,6 +1217,193 @@ function isResolvedRedirect(obj) {
 }
 function parseRedirect(obj) {
   if (obj !== null && typeof obj === "object" && obj.isSerializedRedirect) return redirect(obj);
+}
+function composeRewrites(rewrites) {
+  return {
+    input: ({ url }) => {
+      for (const rewrite of rewrites) url = executeRewriteInput(rewrite, url);
+      return url;
+    },
+    output: ({ url }) => {
+      for (let i = rewrites.length - 1; i >= 0; i--) url = executeRewriteOutput(rewrites[i], url);
+      return url;
+    }
+  };
+}
+function rewriteBasepath(opts) {
+  const trimmedBasepath = trimPath(opts.basepath);
+  const normalizedBasepath = `/${trimmedBasepath}`;
+  const checkBasepath = opts.caseSensitive ? normalizedBasepath : normalizedBasepath.toLowerCase();
+  const checkBasepathWithSlash = `${checkBasepath}/`;
+  return {
+    input: ({ url }) => {
+      const pathname = opts.caseSensitive ? url.pathname : url.pathname.toLowerCase();
+      if (pathname === checkBasepath) url.pathname = "/";
+      else if (pathname.startsWith(checkBasepathWithSlash)) url.pathname = url.pathname.slice(normalizedBasepath.length);
+      return url;
+    },
+    output: ({ url }) => {
+      url.pathname = joinPaths([
+        "/",
+        trimmedBasepath,
+        url.pathname
+      ]);
+      return url;
+    }
+  };
+}
+function executeRewriteInput(rewrite, url) {
+  const res = rewrite?.input?.({ url });
+  if (res) {
+    if (typeof res === "string") return new URL(res);
+    else if (res instanceof URL) return res;
+  }
+  return url;
+}
+function executeRewriteOutput(rewrite, url) {
+  const res = rewrite?.output?.({ url });
+  if (res) {
+    if (typeof res === "string") return new URL(res);
+    else if (res instanceof URL) return res;
+  }
+  return url;
+}
+function createNonReactiveMutableStore(initialValue) {
+  let value = initialValue;
+  return {
+    get() {
+      return value;
+    },
+    set(nextOrUpdater) {
+      value = functionalUpdate(nextOrUpdater, value);
+    }
+  };
+}
+function createNonReactiveReadonlyStore(read) {
+  return { get() {
+    return read();
+  } };
+}
+function createRouterStores(initialState, config) {
+  const { createMutableStore, createReadonlyStore, batch, init } = config;
+  const matchStores = /* @__PURE__ */ new Map();
+  const pendingMatchStores = /* @__PURE__ */ new Map();
+  const cachedMatchStores = /* @__PURE__ */ new Map();
+  const status = createMutableStore(initialState.status);
+  const loadedAt = createMutableStore(initialState.loadedAt);
+  const isLoading = createMutableStore(initialState.isLoading);
+  const isTransitioning = createMutableStore(initialState.isTransitioning);
+  const location = createMutableStore(initialState.location);
+  const resolvedLocation = createMutableStore(initialState.resolvedLocation);
+  const statusCode = createMutableStore(initialState.statusCode);
+  const redirect2 = createMutableStore(initialState.redirect);
+  const matchesId = createMutableStore([]);
+  const pendingIds = createMutableStore([]);
+  const cachedIds = createMutableStore([]);
+  const matches = createReadonlyStore(() => readPoolMatches(matchStores, matchesId.get()));
+  const pendingMatches = createReadonlyStore(() => readPoolMatches(pendingMatchStores, pendingIds.get()));
+  const cachedMatches = createReadonlyStore(() => readPoolMatches(cachedMatchStores, cachedIds.get()));
+  const firstId = createReadonlyStore(() => matchesId.get()[0]);
+  const hasPending = createReadonlyStore(() => matchesId.get().some((matchId) => {
+    return matchStores.get(matchId)?.get().status === "pending";
+  }));
+  const matchRouteDeps = createReadonlyStore(() => ({
+    locationHref: location.get().href,
+    resolvedLocationHref: resolvedLocation.get()?.href,
+    status: status.get()
+  }));
+  const __store = createReadonlyStore(() => ({
+    status: status.get(),
+    loadedAt: loadedAt.get(),
+    isLoading: isLoading.get(),
+    isTransitioning: isTransitioning.get(),
+    matches: matches.get(),
+    location: location.get(),
+    resolvedLocation: resolvedLocation.get(),
+    statusCode: statusCode.get(),
+    redirect: redirect2.get()
+  }));
+  const matchStoreByRouteIdCache = createLRUCache(64);
+  function getRouteMatchStore(routeId) {
+    let cached = matchStoreByRouteIdCache.get(routeId);
+    if (!cached) {
+      cached = createReadonlyStore(() => {
+        const ids = matchesId.get();
+        for (const id of ids) {
+          const matchStore = matchStores.get(id);
+          if (matchStore && matchStore.routeId === routeId) return matchStore.get();
+        }
+      });
+      matchStoreByRouteIdCache.set(routeId, cached);
+    }
+    return cached;
+  }
+  const store = {
+    status,
+    loadedAt,
+    isLoading,
+    isTransitioning,
+    location,
+    resolvedLocation,
+    statusCode,
+    redirect: redirect2,
+    matchesId,
+    pendingIds,
+    cachedIds,
+    matches,
+    pendingMatches,
+    cachedMatches,
+    firstId,
+    hasPending,
+    matchRouteDeps,
+    matchStores,
+    pendingMatchStores,
+    cachedMatchStores,
+    __store,
+    getRouteMatchStore,
+    setMatches,
+    setPending,
+    setCached
+  };
+  setMatches(initialState.matches);
+  init?.(store);
+  function setMatches(nextMatches) {
+    reconcileMatchPool(nextMatches, matchStores, matchesId, createMutableStore, batch);
+  }
+  function setPending(nextMatches) {
+    reconcileMatchPool(nextMatches, pendingMatchStores, pendingIds, createMutableStore, batch);
+  }
+  function setCached(nextMatches) {
+    reconcileMatchPool(nextMatches, cachedMatchStores, cachedIds, createMutableStore, batch);
+  }
+  return store;
+}
+function readPoolMatches(pool, ids) {
+  const matches = [];
+  for (const id of ids) {
+    const matchStore = pool.get(id);
+    if (matchStore) matches.push(matchStore.get());
+  }
+  return matches;
+}
+function reconcileMatchPool(nextMatches, pool, idStore, createMutableStore, batch) {
+  const nextIds = nextMatches.map((d) => d.id);
+  const nextIdSet = new Set(nextIds);
+  batch(() => {
+    for (const id of pool.keys()) if (!nextIdSet.has(id)) pool.delete(id);
+    for (const nextMatch of nextMatches) {
+      const existing = pool.get(nextMatch.id);
+      if (!existing) {
+        const matchStore = createMutableStore(nextMatch);
+        matchStore.routeId = nextMatch.routeId;
+        pool.set(nextMatch.id, matchStore);
+        continue;
+      }
+      existing.routeId = nextMatch.routeId;
+      if (existing.get() !== nextMatch) existing.set(nextMatch);
+    }
+    if (!arraysEqual(idStore.get(), nextIds)) idStore.set(nextIds);
+  });
 }
 const triggerOnReady = (inner) => {
   if (!inner.rendered) {
@@ -1839,193 +2039,6 @@ const componentTypes = [
   "pendingComponent",
   "notFoundComponent"
 ];
-function composeRewrites(rewrites) {
-  return {
-    input: ({ url }) => {
-      for (const rewrite of rewrites) url = executeRewriteInput(rewrite, url);
-      return url;
-    },
-    output: ({ url }) => {
-      for (let i = rewrites.length - 1; i >= 0; i--) url = executeRewriteOutput(rewrites[i], url);
-      return url;
-    }
-  };
-}
-function rewriteBasepath(opts) {
-  const trimmedBasepath = trimPath(opts.basepath);
-  const normalizedBasepath = `/${trimmedBasepath}`;
-  const checkBasepath = opts.caseSensitive ? normalizedBasepath : normalizedBasepath.toLowerCase();
-  const checkBasepathWithSlash = `${checkBasepath}/`;
-  return {
-    input: ({ url }) => {
-      const pathname = opts.caseSensitive ? url.pathname : url.pathname.toLowerCase();
-      if (pathname === checkBasepath) url.pathname = "/";
-      else if (pathname.startsWith(checkBasepathWithSlash)) url.pathname = url.pathname.slice(normalizedBasepath.length);
-      return url;
-    },
-    output: ({ url }) => {
-      url.pathname = joinPaths([
-        "/",
-        trimmedBasepath,
-        url.pathname
-      ]);
-      return url;
-    }
-  };
-}
-function executeRewriteInput(rewrite, url) {
-  const res = rewrite?.input?.({ url });
-  if (res) {
-    if (typeof res === "string") return new URL(res);
-    else if (res instanceof URL) return res;
-  }
-  return url;
-}
-function executeRewriteOutput(rewrite, url) {
-  const res = rewrite?.output?.({ url });
-  if (res) {
-    if (typeof res === "string") return new URL(res);
-    else if (res instanceof URL) return res;
-  }
-  return url;
-}
-function createNonReactiveMutableStore(initialValue) {
-  let value = initialValue;
-  return {
-    get() {
-      return value;
-    },
-    set(nextOrUpdater) {
-      value = functionalUpdate(nextOrUpdater, value);
-    }
-  };
-}
-function createNonReactiveReadonlyStore(read) {
-  return { get() {
-    return read();
-  } };
-}
-function createRouterStores(initialState, config) {
-  const { createMutableStore, createReadonlyStore, batch, init } = config;
-  const matchStores = /* @__PURE__ */ new Map();
-  const pendingMatchStores = /* @__PURE__ */ new Map();
-  const cachedMatchStores = /* @__PURE__ */ new Map();
-  const status = createMutableStore(initialState.status);
-  const loadedAt = createMutableStore(initialState.loadedAt);
-  const isLoading = createMutableStore(initialState.isLoading);
-  const isTransitioning = createMutableStore(initialState.isTransitioning);
-  const location = createMutableStore(initialState.location);
-  const resolvedLocation = createMutableStore(initialState.resolvedLocation);
-  const statusCode = createMutableStore(initialState.statusCode);
-  const redirect2 = createMutableStore(initialState.redirect);
-  const matchesId = createMutableStore([]);
-  const pendingIds = createMutableStore([]);
-  const cachedIds = createMutableStore([]);
-  const matches = createReadonlyStore(() => readPoolMatches(matchStores, matchesId.get()));
-  const pendingMatches = createReadonlyStore(() => readPoolMatches(pendingMatchStores, pendingIds.get()));
-  const cachedMatches = createReadonlyStore(() => readPoolMatches(cachedMatchStores, cachedIds.get()));
-  const firstId = createReadonlyStore(() => matchesId.get()[0]);
-  const hasPending = createReadonlyStore(() => matchesId.get().some((matchId) => {
-    return matchStores.get(matchId)?.get().status === "pending";
-  }));
-  const matchRouteDeps = createReadonlyStore(() => ({
-    locationHref: location.get().href,
-    resolvedLocationHref: resolvedLocation.get()?.href,
-    status: status.get()
-  }));
-  const __store = createReadonlyStore(() => ({
-    status: status.get(),
-    loadedAt: loadedAt.get(),
-    isLoading: isLoading.get(),
-    isTransitioning: isTransitioning.get(),
-    matches: matches.get(),
-    location: location.get(),
-    resolvedLocation: resolvedLocation.get(),
-    statusCode: statusCode.get(),
-    redirect: redirect2.get()
-  }));
-  const matchStoreByRouteIdCache = createLRUCache(64);
-  function getRouteMatchStore(routeId) {
-    let cached = matchStoreByRouteIdCache.get(routeId);
-    if (!cached) {
-      cached = createReadonlyStore(() => {
-        const ids = matchesId.get();
-        for (const id of ids) {
-          const matchStore = matchStores.get(id);
-          if (matchStore && matchStore.routeId === routeId) return matchStore.get();
-        }
-      });
-      matchStoreByRouteIdCache.set(routeId, cached);
-    }
-    return cached;
-  }
-  const store = {
-    status,
-    loadedAt,
-    isLoading,
-    isTransitioning,
-    location,
-    resolvedLocation,
-    statusCode,
-    redirect: redirect2,
-    matchesId,
-    pendingIds,
-    cachedIds,
-    matches,
-    pendingMatches,
-    cachedMatches,
-    firstId,
-    hasPending,
-    matchRouteDeps,
-    matchStores,
-    pendingMatchStores,
-    cachedMatchStores,
-    __store,
-    getRouteMatchStore,
-    setMatches,
-    setPending,
-    setCached
-  };
-  setMatches(initialState.matches);
-  init?.(store);
-  function setMatches(nextMatches) {
-    reconcileMatchPool(nextMatches, matchStores, matchesId, createMutableStore, batch);
-  }
-  function setPending(nextMatches) {
-    reconcileMatchPool(nextMatches, pendingMatchStores, pendingIds, createMutableStore, batch);
-  }
-  function setCached(nextMatches) {
-    reconcileMatchPool(nextMatches, cachedMatchStores, cachedIds, createMutableStore, batch);
-  }
-  return store;
-}
-function readPoolMatches(pool, ids) {
-  const matches = [];
-  for (const id of ids) {
-    const matchStore = pool.get(id);
-    if (matchStore) matches.push(matchStore.get());
-  }
-  return matches;
-}
-function reconcileMatchPool(nextMatches, pool, idStore, createMutableStore, batch) {
-  const nextIds = nextMatches.map((d) => d.id);
-  const nextIdSet = new Set(nextIds);
-  batch(() => {
-    for (const id of pool.keys()) if (!nextIdSet.has(id)) pool.delete(id);
-    for (const nextMatch of nextMatches) {
-      const existing = pool.get(nextMatch.id);
-      if (!existing) {
-        const matchStore = createMutableStore(nextMatch);
-        matchStore.routeId = nextMatch.routeId;
-        pool.set(nextMatch.id, matchStore);
-        continue;
-      }
-      existing.routeId = nextMatch.routeId;
-      if (existing.get() !== nextMatch) existing.set(nextMatch);
-    }
-    if (!arraysEqual(idStore.get(), nextIds)) idStore.set(nextIds);
-  });
-}
 function getLocationChangeInfo(location, resolvedLocation) {
   const fromLocation = resolvedLocation;
   const toLocation = location;
@@ -2037,7 +2050,6 @@ function getLocationChangeInfo(location, resolvedLocation) {
     hashChanged: fromLocation?.hash !== toLocation.hash
   };
 }
-const locationHistoryActions = /* @__PURE__ */ new WeakMap();
 var RouterCore = class {
   /**
   * @deprecated Use the `createRouter` function instead
@@ -2049,6 +2061,7 @@ var RouterCore = class {
     this.isViewTransitionTypesSupported = void 0;
     this.subscribers = /* @__PURE__ */ new Set();
     this.routeBranchCache = /* @__PURE__ */ new WeakMap();
+    this.lightweightCache = /* @__PURE__ */ new WeakMap();
     this.startTransition = (fn) => fn();
     this.update = (newOptions) => {
       const prevOptions = this.options;
@@ -2413,7 +2426,7 @@ var RouterCore = class {
         hashScrollIntoView,
         ignoreBlocker
       });
-      Promise.resolve().then(() => {
+      queueMicrotask(() => {
         if (this.pendingBuiltLocation === location) this.pendingBuiltLocation = void 0;
       });
       return commitPromise;
@@ -2437,7 +2450,7 @@ var RouterCore = class {
         }
         const reloadHref = !hrefIsUrl && publicHref ? publicHref : href;
         if (isDangerousProtocol(reloadHref, this.protocolAllowlist)) {
-          return Promise.resolve();
+          return;
         }
         if (!rest.ignoreBlocker) {
           const blockers = this.history.getBlockers?.() ?? [];
@@ -2446,12 +2459,12 @@ var RouterCore = class {
               currentLocation: this.latestLocation,
               nextLocation: this.latestLocation,
               action: "PUSH"
-            })) return Promise.resolve();
+            })) return;
           }
         }
         if (rest.replace) window.location.replace(reloadHref);
         else window.location.href = reloadHref;
-        return Promise.resolve();
+        return;
       }
       return this.buildAndCommitLocation({
         ...rest,
@@ -2502,8 +2515,7 @@ var RouterCore = class {
         this.startTransition(async () => {
           try {
             this.beforeLoad();
-            if (historyAction) locationHistoryActions.set(this.latestLocation, historyAction);
-            else locationHistoryActions.delete(this.latestLocation);
+            if (historyAction) this._scroll.hash = historyAction === "PUSH" || historyAction === "REPLACE";
             const next = this.latestLocation;
             const locationChangeInfo = getLocationChangeInfo(next, this.stores.resolvedLocation.get());
             if (!this.stores.redirect.get()) this.emit({
@@ -2959,6 +2971,9 @@ var RouterCore = class {
   * operations like AbortController, ControlledPromise, loaderDeps, and full match objects.
   */
   matchRoutesLightweight(location) {
+    const lastStateMatchId = last(this.stores.matchesId.get());
+    const cached = this.lightweightCache.get(location);
+    if (cached && cached[0] === lastStateMatchId) return cached[1];
     const { matchedRoutes, routeParams } = this.getMatchedRoutes(location.pathname);
     const lastRoute = last(matchedRoutes);
     const accumulatedSearch = { ...location.search };
@@ -2966,7 +2981,6 @@ var RouterCore = class {
       Object.assign(accumulatedSearch, validateSearch(route.options.validateSearch, accumulatedSearch));
     } catch {
     }
-    const lastStateMatchId = last(this.stores.matchesId.get());
     const lastStateMatch = lastStateMatchId && this.stores.matchStores.get(lastStateMatchId)?.get();
     const canReuseParams = lastStateMatch && lastStateMatch.routeId === lastRoute.id && lastStateMatch.pathname === location.pathname;
     let params;
@@ -2979,12 +2993,14 @@ var RouterCore = class {
       }
       params = strictParams;
     }
-    return {
+    const result = {
       matchedRoutes,
       fullPath: lastRoute.fullPath,
       search: accumulatedSearch,
       params
     };
+    this.lightweightCache.set(location, [lastStateMatchId, result]);
+    return result;
   }
 };
 var SearchParamError = class extends Error {
@@ -3113,18 +3129,6 @@ function extractStrictParams(route, accumulatedParams) {
     Object.assign(accumulatedParams, result);
   }
 }
-function getSafeSessionStorage() {
-  try {
-    return sessionStorage;
-  } catch {
-    return;
-  }
-}
-const storageKey = "tsr-scroll-restoration-v1_3";
-getSafeSessionStorage();
-const defaultGetScrollRestorationKey = (location) => {
-  return location.state.__TSR_key || location.href;
-};
 function getAssetCrossOrigin(assetCrossOrigin, kind) {
   if (!assetCrossOrigin) return;
   if (typeof assetCrossOrigin === "string") return assetCrossOrigin;
@@ -3264,7 +3268,7 @@ function createSerializationAdapter(opts) {
 }
 // @__NO_SIDE_EFFECTS__
 function makeSsrSerovalPlugin(serializationAdapter, options) {
-  return /* @__PURE__ */ ai({
+  return /* @__PURE__ */ createPlugin({
     tag: "$TSR/t/" + serializationAdapter.key,
     test: serializationAdapter.test,
     parse: { stream(value, ctx, _data) {
@@ -3279,7 +3283,7 @@ function makeSsrSerovalPlugin(serializationAdapter, options) {
 }
 // @__NO_SIDE_EFFECTS__
 function makeSerovalPlugin(serializationAdapter) {
-  return /* @__PURE__ */ ai({
+  return /* @__PURE__ */ createPlugin({
     tag: "$TSR/t/" + serializationAdapter.key,
     test: serializationAdapter.test,
     parse: {
@@ -3376,7 +3380,7 @@ const RAW_STREAM_FACTORY_CONSTRUCTOR_TEXT = (stream) => {
 const FACTORY_BINARY = `(s=>new ReadableStream({start(c){s.on({next(b){try{const d=atob(b),a=new Uint8Array(d.length);for(let i=0;i<d.length;i++)a[i]=d.charCodeAt(i);c.enqueue(a)}catch(_){}},throw(e){c.error(e)},return(){try{c.close()}catch(_){}}})}}))`;
 const FACTORY_TEXT = `(s=>{const e=new TextEncoder();return new ReadableStream({start(c){s.on({next(v){try{if(typeof v==='string'){c.enqueue(e.encode(v))}else{const d=atob(v.$b64),a=new Uint8Array(d.length);for(let i=0;i<d.length;i++)a[i]=d.charCodeAt(i);c.enqueue(a)}}catch(_){}},throw(x){c.error(x)},return(){try{c.close()}catch(_){}}})}})})`;
 function toBinaryStream(readable) {
-  const stream = re();
+  const stream = createStream();
   const reader = readable.getReader();
   (async () => {
     try {
@@ -3397,7 +3401,7 @@ function toBinaryStream(readable) {
   return stream;
 }
 function toTextStream(readable) {
-  const stream = re();
+  const stream = createStream();
   const reader = readable.getReader();
   const decoder = new TextDecoder("utf-8", { fatal: true });
   (async () => {
@@ -3428,9 +3432,9 @@ function toTextStream(readable) {
   })();
   return stream;
 }
-const RawStreamSSRPlugin = /* @__PURE__ */ ai({
+const RawStreamSSRPlugin = /* @__PURE__ */ createPlugin({
   tag: "tss/RawStream",
-  extends: [/* @__PURE__ */ ai({
+  extends: [/* @__PURE__ */ createPlugin({
     tag: "tss/RawStreamFactory",
     test(value) {
       return value === RAW_STREAM_FACTORY_BINARY;
@@ -3452,7 +3456,7 @@ const RawStreamSSRPlugin = /* @__PURE__ */ ai({
     deserialize(_node, _ctx, _data) {
       return RAW_STREAM_FACTORY_BINARY;
     }
-  }), /* @__PURE__ */ ai({
+  }), /* @__PURE__ */ createPlugin({
     tag: "tss/RawStreamFactoryText",
     test(value) {
       return value === RAW_STREAM_FACTORY_TEXT;
@@ -3484,7 +3488,7 @@ const RawStreamSSRPlugin = /* @__PURE__ */ ai({
       return {
         hint: ctx.parse(value.hint),
         factory: ctx.parse(factory),
-        stream: ctx.parse(re())
+        stream: ctx.parse(createStream())
       };
     },
     async async(value, ctx, _data) {
@@ -3517,7 +3521,7 @@ const RawStreamSSRPlugin = /* @__PURE__ */ ai({
 // @__NO_SIDE_EFFECTS__
 function createRawStreamRPCPlugin(onRawStream) {
   let nextStreamId = 1;
-  return /* @__PURE__ */ ai({
+  return /* @__PURE__ */ createPlugin({
     tag: "tss/RawStream",
     test(value) {
       return value instanceof RawStream;
@@ -3542,7 +3546,7 @@ function createRawStreamRPCPlugin(onRawStream) {
     }
   });
 }
-const ShallowErrorPlugin = /* @__PURE__ */ ai({
+const ShallowErrorPlugin = /* @__PURE__ */ createPlugin({
   tag: "$TSR/Error",
   test(value) {
     return value instanceof Error;
@@ -3568,7 +3572,7 @@ const ShallowErrorPlugin = /* @__PURE__ */ ai({
 const defaultSerovalPlugins = [
   ShallowErrorPlugin,
   RawStreamSSRPlugin,
-  p
+  ReadableStreamPlugin
 ];
 function toHeadersInstance(init) {
   if (init instanceof Headers) return init;
@@ -3608,7 +3612,7 @@ function dehydrateMatch(match) {
   if (match.globalNotFound) dehydratedMatch.g = true;
   return dehydratedMatch;
 }
-const INITIAL_SCRIPTS = [dn(SCOPE_ID), tsrScript_default];
+const INITIAL_SCRIPTS = [getCrossReferenceHeader(SCOPE_ID), tsrScript_default];
 var ScriptBuffer = class {
   constructor(injectScript) {
     this._scriptBarrierLifted = false;
@@ -3920,7 +3924,7 @@ function attachRouterServerSsrUtils({ router, manifest, getRequestAssets }) {
         scriptBuffer.flush();
         signalSerializationComplete();
       };
-      Sn(dehydratedRouter, {
+      crossSerializeStream(dehydratedRouter, {
         refs: /* @__PURE__ */ new Map(),
         plugins,
         onSerialize: (data, initial) => {

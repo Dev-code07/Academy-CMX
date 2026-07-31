@@ -1,6 +1,6 @@
 import { P as PostalMime } from "./postal-mime.mjs";
 import { d as distExports } from "./standardwebhooks.mjs";
-var version = "6.17.1";
+var version = "6.18.1";
 function buildPaginationQuery(options) {
   const searchParams = new URLSearchParams();
   if (options.limit !== void 0) searchParams.set("limit", options.limit.toString());
@@ -204,7 +204,7 @@ async function render(node) {
   }
   return render2(node);
 }
-var Batch = class {
+var Batch$1 = class {
   constructor(resend) {
     this.resend = resend;
   }
@@ -899,6 +899,54 @@ var Segments = class {
     return await this.resend.delete(`/segments/${id}`);
   }
 };
+var Batch = class {
+  constructor(resend) {
+    this.resend = resend;
+  }
+  async add(options) {
+    return this.resend.post("/suppressions/batch/add", options);
+  }
+  async remove(options) {
+    return this.resend.post("/suppressions/batch/remove", options);
+  }
+};
+const missingIdentifierError = () => ({
+  data: null,
+  headers: null,
+  error: {
+    message: "Missing `id` field.",
+    statusCode: null,
+    name: "missing_required_field"
+  }
+});
+var Suppressions = class {
+  constructor(resend) {
+    this.resend = resend;
+    this.batch = new Batch(resend);
+  }
+  async add(options) {
+    return this.resend.post("/suppressions", options);
+  }
+  async list(options = {}) {
+    const queryString = buildSuppressionsQuery(options);
+    const url = queryString ? `/suppressions?${queryString}` : "/suppressions";
+    return this.resend.get(url);
+  }
+  async get(idOrEmail) {
+    if (!idOrEmail) return missingIdentifierError();
+    return this.resend.get(`/suppressions/${encodeURIComponent(idOrEmail)}`);
+  }
+  async remove(idOrEmail) {
+    if (!idOrEmail) return missingIdentifierError();
+    return this.resend.delete(`/suppressions/${encodeURIComponent(idOrEmail)}`);
+  }
+};
+function buildSuppressionsQuery(options) {
+  const { origin, ...pagination } = options;
+  const searchParams = new URLSearchParams(buildPaginationQuery(pagination));
+  if (origin) searchParams.set("origin", origin);
+  return searchParams.toString();
+}
 function getPaginationQueryProperties(options = {}) {
   const query = new URLSearchParams();
   if (options.before) query.set("before", options.before);
@@ -1069,7 +1117,7 @@ var Resend = class {
     this.apiKeys = new ApiKeys(this);
     this.audiences = this.segments;
     this.automations = new Automations(this);
-    this.batch = new Batch(this);
+    this.batch = new Batch$1(this);
     this.broadcasts = new Broadcasts(this);
     this.contactProperties = new ContactProperties(this);
     this.contacts = new Contacts(this);
@@ -1078,6 +1126,7 @@ var Resend = class {
     this.events = new Events(this);
     this.logs = new Logs(this);
     this.oauthGrants = new OAuthGrants(this);
+    this.suppressions = new Suppressions(this);
     this.templates = new Templates(this);
     this.topics = new Topics(this);
     this.webhooks = new Webhooks(this);
@@ -1093,39 +1142,53 @@ var Resend = class {
       "Content-Type": "application/json"
     });
   }
+  logError(error, path, status) {
+    if (typeof process !== "undefined" && process.env && false) ;
+  }
   async fetchRequest(path, options = {}) {
     try {
       const response = await fetch(`${this.baseUrl}${path}`, options);
       if (!response.ok) try {
         const rawError = await response.text();
+        const parsedError = JSON.parse(rawError);
+        this.logError(parsedError, path, response.status);
         return {
           data: null,
-          error: JSON.parse(rawError),
+          error: parsedError,
           headers: Object.fromEntries(response.headers.entries())
         };
       } catch (err) {
-        if (err instanceof SyntaxError) return {
-          data: null,
-          error: {
+        if (err instanceof SyntaxError) {
+          const error2 = {
             name: "application_error",
             statusCode: response.status,
             message: "Internal server error. We are unable to process your request right now, please try again later."
-          },
-          headers: Object.fromEntries(response.headers.entries())
-        };
+          };
+          this.logError(error2, path, response.status);
+          return {
+            data: null,
+            error: error2,
+            headers: Object.fromEntries(response.headers.entries())
+          };
+        }
         const error = {
           message: response.statusText,
           statusCode: response.status,
           name: "application_error"
         };
-        if (err instanceof Error) return {
-          data: null,
-          error: {
+        if (err instanceof Error) {
+          const errorWithMessage = {
             ...error,
             message: err.message
-          },
-          headers: Object.fromEntries(response.headers.entries())
-        };
+          };
+          this.logError(errorWithMessage, path, response.status);
+          return {
+            data: null,
+            error: errorWithMessage,
+            headers: Object.fromEntries(response.headers.entries())
+          };
+        }
+        this.logError(error, path, response.status);
         return {
           data: null,
           error,
@@ -1138,13 +1201,15 @@ var Resend = class {
         headers: Object.fromEntries(response.headers.entries())
       };
     } catch {
+      const error = {
+        name: "application_error",
+        statusCode: null,
+        message: "Unable to fetch data. The request could not be resolved."
+      };
+      this.logError(error, path);
       return {
         data: null,
-        error: {
-          name: "application_error",
-          statusCode: null,
-          message: "Unable to fetch data. The request could not be resolved."
-        },
+        error,
         headers: null
       };
     }

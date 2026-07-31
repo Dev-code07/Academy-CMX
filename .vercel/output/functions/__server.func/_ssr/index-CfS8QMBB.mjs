@@ -2,16 +2,17 @@ import { r as reactExports, j as jsxRuntimeExports } from "../_libs/react.mjs";
 import { L as Link } from "../_libs/tanstack__react-router.mjs";
 import { c as clsx } from "../_libs/clsx.mjs";
 import { t as twMerge } from "../_libs/tailwind-merge.mjs";
-import { p as personas, t as trustStats, a as assessmentQuestions, w as whyCards, s as salaryRoles, l as learningPaths, b as liveProjects, c as skills, m as mentors, d as careerServices, h as hiringPartners, i as incubationTracks, e as incubationFeatures, f as stories, g as globalCountries, j as certifications, k as faqs } from "./router-CRHhprP7.mjs";
+import { m as motion } from "../_libs/motion.mjs";
+import { p as personas, t as trustStats, a as assessmentQuestions, w as whyCards, s as salaryRoles, l as learningPaths, b as liveProjects, c as skills, m as mentors, d as careerServices, h as hiringPartners, i as incubationTracks, e as incubationFeatures, f as stories, g as globalCountries, j as certifications, k as faqs } from "./router-DLIvHLmf.mjs";
 import { u as useEmblaCarousel } from "../_libs/embla-carousel-react.mjs";
 import { S as Slot } from "../_libs/radix-ui__react-slot.mjs";
 import { c as cva } from "../_libs/class-variance-authority.mjs";
-import { a as createServerFn, T as TSS_SERVER_FUNCTION, g as getServerFnById } from "./server-CQgTzQcz.mjs";
+import { a as createServerFn, T as TSS_SERVER_FUNCTION, g as getServerFnById } from "./server-D4Uo4_Z7.mjs";
 import { R as Root2, I as Item, H as Header$1, T as Trigger2, C as Content2 } from "../_libs/radix-ui__react-accordion.mjs";
 import { D as Dialog$1, a as DialogPortal$1, b as DialogContent$1, c as DialogClose, d as DialogTitle$1, e as DialogOverlay$1, f as DialogDescription$1 } from "../_libs/radix-ui__react-dialog.mjs";
 import "../_libs/seroval.mjs";
 import { A as ArrowRight, D as Download, S as Star, C as Check, a as Sparkles, T as TrendingUp, b as Target, c as Clock, G as Globe, d as Cog, L as Lightbulb, e as Award, B as Briefcase, R as Rocket, U as Users, f as Brain, F as Flame, g as ArrowUpRight, h as ChartNoAxesColumn, W as Wrench, i as Linkedin, Q as Quote, j as ChevronLeft, k as ChevronRight, l as ShieldCheck, H as Headphones, M as MessageCircle, m as Gift, n as ArrowLeft, o as ChevronDown, X } from "../_libs/lucide-react.mjs";
-import { A as AnimatePresence, m as motion, u as useReducedMotion, a as useInView } from "../_libs/framer-motion.mjs";
+import { A as AnimatePresence, u as useReducedMotion, a as useInView } from "../_libs/framer-motion.mjs";
 import { R as ResponsiveContainer, B as BarChart, C as CartesianGrid, X as XAxis, Y as YAxis, T as Tooltip, a as Bar, b as Cell } from "../_libs/recharts.mjs";
 import { o as object, s as string, r as record } from "../_libs/zod.mjs";
 import "../_libs/dotenv.mjs";
@@ -44,6 +45,7 @@ import "../_libs/radix-ui__react-collection.mjs";
 import "../_libs/radix-ui__primitive.mjs";
 import "../_libs/@radix-ui/react-use-controllable-state+[...].mjs";
 import "../_libs/@radix-ui/react-use-layout-effect+[...].mjs";
+import "../_libs/@radix-ui/react-use-effect-event+[...].mjs";
 import "../_libs/radix-ui__react-primitive.mjs";
 import "../_libs/radix-ui__react-collapsible.mjs";
 import "../_libs/radix-ui__react-presence.mjs";
@@ -51,7 +53,6 @@ import "../_libs/radix-ui__react-id.mjs";
 import "../_libs/radix-ui__react-direction.mjs";
 import "../_libs/@radix-ui/react-dismissable-layer+[...].mjs";
 import "../_libs/@radix-ui/react-use-callback-ref+[...].mjs";
-import "../_libs/@radix-ui/react-use-escape-keydown+[...].mjs";
 import "../_libs/radix-ui__react-focus-scope.mjs";
 import "../_libs/radix-ui__react-portal.mjs";
 import "../_libs/radix-ui__react-focus-guards.mjs";
@@ -144,6 +145,7 @@ const nav = [
 ];
 function Header() {
   const [scrolled, setScrolled] = reactExports.useState(false);
+  const [mobileOpen, setMobileOpen] = reactExports.useState(false);
   const { openLead } = useLeadModal();
   reactExports.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -151,32 +153,118 @@ function Header() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+  reactExports.useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [mobileOpen]);
+  const handleNavClick = () => {
+    setMobileOpen(false);
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "header",
     {
-      className: `fixed inset-x-0 top-0 z-40 transition-all duration-300 ${scrolled ? "border-b border-white/10 bg-[oklch(0.1_0.04_270)/0.7] backdrop-blur-xl" : "border-b border-transparent"}`,
-      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(Link, { to: "/", className: "group flex items-center gap-2.5", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "relative grid size-9 place-items-center rounded-xl bg-gradient-primary text-sm font-bold shadow-glow", children: [
-            "CM",
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "absolute inset-0 rounded-xl bg-gradient-primary opacity-50 blur-md transition-opacity group-hover:opacity-80" })
+      className: `fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled || mobileOpen ? "border-b border-white/10 bg-[oklch(0.1_0.04_270)] md:bg-[oklch(0.1_0.04_270)/0.7] md:backdrop-blur-xl" : "border-b border-transparent"}`,
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Link, { to: "/", className: "group flex items-center gap-2.5", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "relative grid size-9 place-items-center rounded-xl bg-gradient-primary text-sm font-bold shadow-glow", children: [
+              "CM",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "absolute inset-0 rounded-xl bg-gradient-primary opacity-50 blur-md transition-opacity group-hover:opacity-80" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "font-display text-base font-bold tracking-tight", children: [
+              SITE.brand,
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ml-1 text-xs text-muted-foreground", children: "Academy™" })
+            ] })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "font-display text-base font-bold tracking-tight", children: [
-            SITE.brand,
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ml-1 text-xs text-muted-foreground", children: "Academy™" })
-          ] })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "hidden items-center gap-8 md:flex", children: nav.map((n) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "a",
+            {
+              href: n.href,
+              className: "text-sm text-muted-foreground transition-colors hover:text-foreground",
+              children: n.label
+            },
+            n.href
+          )) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "hidden md:flex items-center gap-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(GlowButton, { size: "md", onClick: () => openLead("header-cta"), children: "Book Free Session" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              onClick: () => setMobileOpen((prev) => !prev),
+              className: "relative z-50 flex size-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-foreground transition-colors hover:bg-white/10 md:hidden",
+              "aria-label": mobileOpen ? "Close menu" : "Open menu",
+              "aria-expanded": mobileOpen,
+              children: mobileOpen ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "svg",
+                {
+                  className: "size-5",
+                  fill: "none",
+                  stroke: "currentColor",
+                  viewBox: "0 0 24 24",
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "path",
+                    {
+                      strokeLinecap: "round",
+                      strokeLinejoin: "round",
+                      strokeWidth: "2",
+                      d: "M6 18L18 6M6 6l12 12"
+                    }
+                  )
+                }
+              ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "svg",
+                {
+                  className: "size-5",
+                  fill: "none",
+                  stroke: "currentColor",
+                  viewBox: "0 0 24 24",
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "path",
+                    {
+                      strokeLinecap: "round",
+                      strokeLinejoin: "round",
+                      strokeWidth: "2",
+                      d: "M4 6h16M4 12h16M4 18h16"
+                    }
+                  )
+                }
+              )
+            }
+          )
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "hidden items-center gap-8 md:flex", children: nav.map((n) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "a",
-          {
-            href: n.href,
-            className: "text-sm text-muted-foreground transition-colors hover:text-foreground",
-            children: n.label
-          },
-          n.href
-        )) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(GlowButton, { size: "md", onClick: () => openLead("header-cta"), children: "Book Free Session" }) })
-      ] })
+        mobileOpen && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative fixed inset-x-0 top-0 bottom-0 z-40 flex h-[calc(70vh-4rem)] flex-col justify-between overflow-hidden bg-[oklch(0.1_0.04_270)] p-6 md:hidden", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "pointer-events-none absolute -top-10 -left-10 size-72 rounded-full bg-gradient-primary opacity-20 blur-3xl" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "pointer-events-none absolute -bottom-10 -right-10 size-72 rounded-full bg-gradient-primary opacity-25 blur-3xl" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "relative z-10 flex flex-col items-start gap-6 pt-4", children: nav.map((n) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "a",
+            {
+              href: n.href,
+              onClick: handleNavClick,
+              className: "group font-display text-lg font-bold transition-opacity",
+              children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: " text-white group-hover:opacity-80", children: n.label })
+            },
+            n.href
+          )) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "relative z-10 pb-10 pt-6 border-t border-white/10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            GlowButton,
+            {
+              size: "md",
+              className: "w-full justify-center",
+              onClick: () => {
+                setMobileOpen(false);
+                openLead("header-cta-mobile");
+              },
+              children: "Book Free Session"
+            }
+          ) })
+        ] })
+      ]
     }
   );
 }
@@ -211,20 +299,34 @@ function AIBrainOrb() {
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-[12%] rounded-full bg-gradient-glow opacity-30 blur-3xl animate-pulse-glow" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-[28%] rounded-full bg-secondary opacity-30 blur-2xl" })
     ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 rounded-full border border-white/10" }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(
-      motion.div,
+      motion.svg,
       {
-        className: "absolute inset-0 rounded-full border border-white/10",
+        className: "absolute inset-0 h-full w-full",
+        viewBox: "0 0 200 200",
         animate: reduce ? {} : { rotate: 360 },
         transition: { duration: 60, repeat: Infinity, ease: "linear" },
-        children: Array.from({ length: 48 }).map((_, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "span",
-          {
-            className: "absolute left-1/2 top-0 h-2 w-px -translate-x-1/2 bg-white/30",
-            style: { transform: `rotate(${i * 7.5}deg) translateY(0)`, transformOrigin: "50% 260px" }
-          },
-          i
-        ))
+        children: Array.from({ length: 48 }).map(function(_, i) {
+          const angle = i * 7.5 * Math.PI / 180;
+          const x1 = 100 + 92 * Math.cos(angle);
+          const y1 = 100 + 92 * Math.sin(angle);
+          const x2 = 100 + 100 * Math.cos(angle);
+          const y2 = 100 + 100 * Math.sin(angle);
+          return /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "line",
+            {
+              x1,
+              y1,
+              x2,
+              y2,
+              stroke: "white",
+              strokeOpacity: "0.3",
+              strokeWidth: "1.5"
+            },
+            i
+          );
+        })
       }
     ),
     /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -235,13 +337,23 @@ function AIBrainOrb() {
         transition: { duration: 40, repeat: Infinity, ease: "linear" }
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute inset-[30%] grid place-items-center rounded-full bg-gradient-primary shadow-glow", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute inset-[33%] sm:inset-[30%] grid place-items-center rounded-full bg-gradient-primary shadow-glow", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-2 rounded-full bg-[oklch(0.18_0.06_270)]" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { viewBox: "0 0 100 100", className: "relative size-24 text-[color:var(--accent)]", fill: "none", stroke: "currentColor", strokeWidth: "1.2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M50 12 C30 12 22 28 22 42 C12 46 12 60 22 64 C22 78 32 88 50 88 C68 88 78 78 78 64 C88 60 88 46 78 42 C78 28 70 12 50 12 Z" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M50 12 V88 M22 42 H78 M22 64 H78 M30 28 Q50 38 70 28 M30 72 Q50 62 70 72", strokeWidth: "0.8" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "50", cy: "50", r: "3", fill: "currentColor" })
-      ] })
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "svg",
+        {
+          viewBox: "0 0 100 100",
+          className: "relative size-16 sm:size-24 text-[color:var(--accent)]",
+          fill: "none",
+          stroke: "currentColor",
+          strokeWidth: "1.2",
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M50 12 C30 12 22 28 22 42 C12 46 12 60 22 64 C22 78 32 88 50 88 C68 88 78 78 78 64 C88 60 88 46 78 42 C78 28 70 12 50 12 Z" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M50 12 V88 M22 42 H78 M22 64 H78 M30 28 Q50 38 70 28 M30 72 Q50 62 70 72", strokeWidth: "0.8" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "50", cy: "50", r: "3", fill: "currentColor" })
+          ]
+        }
+      )
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       motion.div,
@@ -249,18 +361,18 @@ function AIBrainOrb() {
         className: "absolute inset-0",
         animate: reduce ? {} : { rotate: 360 },
         transition: { duration: 36, repeat: Infinity, ease: "linear" },
-        children: orbits.map((o) => {
+        children: orbits.map(function(o) {
           const rad = o.angle * Math.PI / 180;
-          const x = Number((50 + o.r / 5.2 * Math.cos(rad)).toFixed(4));
-          const y = Number((50 + o.r / 5.2 * Math.sin(rad)).toFixed(4));
+          const x = Number((50 + o.r / 4.5 * Math.cos(rad)).toFixed(4));
+          const y = Number((50 + o.r / 4.5 * Math.sin(rad)).toFixed(4));
           return /* @__PURE__ */ jsxRuntimeExports.jsx(
             motion.div,
             {
               className: "absolute",
-              style: { left: `${x}%`, top: `${y}%`, transform: "translate(-50%, -50%)" },
+              style: { left: x + "%", top: y + "%", transform: "translate(-50%, -50%)" },
               animate: reduce ? {} : { rotate: -360 },
               transition: { duration: 36, repeat: Infinity, ease: "linear" },
-              children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "glass-strong rounded-full px-3 py-1.5 text-xs font-medium shadow-[0_4px_20px_oklch(0_0_0/0.4)]", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: " bg-clip-text", children: o.label }) })
+              children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "glass-strong whitespace-nowrap rounded-full px-2 py-1 text-[10px] font-medium shadow-[0_4px_20px_oklch(0_0_0/0.4)] sm:px-3 sm:py-1.5 sm:text-xs", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "bg-clip-text", children: o.label }) })
             },
             o.label
           );
@@ -305,7 +417,7 @@ function Hero() {
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "size-1.5 rounded-full bg-[color:var(--accent)] animate-pulse-glow" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-mono uppercase tracking-[0.18em] text-[color:var(--accent)]", children: "Cohort 14 · Applications Open" })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(ScrollReveal, { delay: 0.05, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("h1", { className: "mt-6 text-balance font-display text-5xl font-bold leading-[1.02] tracking-[-0.03em] sm:text-6xl lg:text-[68px]", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(ScrollReveal, { delay: 0.05, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("h1", { className: "mt-6 text-balance font-display text-3xl font-bold leading-[1.2] tracking-[-0.03em] sm:text-4xl lg:text-[68px]", children: [
           "Build Your AI Career,",
           " ",
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gradient", children: "Launch Your Startup" }),
@@ -323,7 +435,7 @@ function Hero() {
           ] })
         ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(ScrollReveal, { delay: 0.2, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-10 flex items-center gap-3 text-sm text-muted-foreground", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex", children: Array.from({ length: 5 }).map((_, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(Star, { className: "size-4 fill-[color:var(--accent)] text-[color:var(--accent)]" }, i)) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex direction-row items-center gap-1", children: Array.from({ length: 5 }).map((_, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(Star, { className: "size-4 fill-[color:var(--accent)] text-[color:var(--accent)]" }, i)) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Rated by learners worldwide" })
         ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(ScrollReveal, { delay: 0.25, children: /* @__PURE__ */ jsxRuntimeExports.jsx("dl", { className: "mt-8 grid max-w-lg grid-cols-2 gap-4 sm:grid-cols-4", children: trustStats.map((s) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "glass rounded-xl p-3", children: [
@@ -373,7 +485,7 @@ function VisitorSegmentation({
 }) {
   const { openLead } = useLeadModal();
   const current = personas.find((p) => p.id === active);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-24 sm:py-32", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-12 py-md-24 sm:py-32", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       SectionHeading,
       {
@@ -447,7 +559,16 @@ function VisitorSegmentation({
 function AssessmentFunnel({ profile }) {
   const [step, setStep] = reactExports.useState(0);
   const [answers, setAnswers] = reactExports.useState({});
-  const questions = profile === "student" ? assessmentQuestions.filter((question) => question.id !== "salary") : assessmentQuestions;
+  const isStudent = profile === "student";
+  const questions = (isStudent ? assessmentQuestions.filter((question) => question.id !== "salary") : assessmentQuestions).map((question) => {
+    if (!isStudent) return question;
+    return {
+      ...question,
+      options: question.options.filter(
+        (o) => !o.toLowerCase().includes("salary")
+      )
+    };
+  });
   const total = questions.length;
   const { openLead } = useLeadModal();
   const done = step >= total;
@@ -460,7 +581,7 @@ function AssessmentFunnel({ profile }) {
   const salary = "$95k–$185k";
   const path = answers.goal?.includes("startup") ? "Startup Builder + Agentic AI" : answers.goal?.includes("salary") ? "Generative AI + Automation" : "AI Engineering";
   const timeline = answers.skill === "Complete beginner" ? "9–12 months" : answers.skill === "Advanced" ? "3–4 months" : "5–7 months";
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { id: "assessment", className: "relative py-24 sm:py-32", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-5xl px-4 sm:px-6", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { id: "assessment", className: "relative py-12 md:py-24", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-5xl px-4 sm:px-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       SectionHeading,
       {
@@ -520,8 +641,8 @@ function AssessmentFunnel({ profile }) {
           "%"
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-8 grid gap-4 sm:grid-cols-3", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Stat, { icon: /* @__PURE__ */ jsxRuntimeExports.jsx(TrendingUp, { className: "size-5" }), label: "Salary projection", value: salary }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `mt-8 grid gap-4 ${isStudent ? "sm:grid-cols-2" : "sm:grid-cols-3"}`, children: [
+        !isStudent && /* @__PURE__ */ jsxRuntimeExports.jsx(Stat, { icon: /* @__PURE__ */ jsxRuntimeExports.jsx(TrendingUp, { className: "size-5" }), label: "Salary projection", value: salary }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Stat, { icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Target, { className: "size-5" }), label: "Recommended path", value: path }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Stat, { icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { className: "size-5" }), label: "Timeline to success", value: timeline })
       ] }),
@@ -553,7 +674,7 @@ const iconMap = {
   Globe
 };
 function WhyChoose() {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { id: "why", className: "relative py-24 sm:py-32", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { id: "why", className: "relative py-12 md:py-24", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       SectionHeading,
       {
@@ -581,7 +702,7 @@ function WhyChoose() {
 function SalaryDashboard() {
   const [active, setActive] = reactExports.useState(0);
   const role = salaryRoles[active];
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-24 sm:py-32", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-12 md:py-24", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       SectionHeading,
       {
@@ -622,7 +743,7 @@ function SalaryDashboard() {
             role.outlook
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-6 grid grid-cols-3 gap-3", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-6 grid grid-cols-2 md:grid-cols-3 gap-3", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Metric, { icon: /* @__PURE__ */ jsxRuntimeExports.jsx(TrendingUp, { className: "size-4" }), label: "Avg salary", value: `$${role.avg}k` }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Metric, { icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "size-4" }), label: "Demand growth", value: `+${role.growth}%` }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Metric, { icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Flame, { className: "size-4" }), label: "Outlook", value: role.outlook })
@@ -679,7 +800,7 @@ function Metric({ icon, label, value }) {
 }
 function LearningPaths() {
   const { openLead } = useLeadModal();
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { id: "paths", className: "relative py-24 sm:py-32", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { id: "paths", className: "relative py-12 md:py-24", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       SectionHeading,
       {
@@ -731,7 +852,7 @@ function LearningPaths() {
   ] }) });
 }
 function LiveProjects() {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { id: "projects", className: "relative py-24 sm:py-32", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { id: "projects", className: "relative py-12 md:py-24", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       SectionHeading,
       {
@@ -763,7 +884,7 @@ function Row({ k, v, accent }) {
 }
 function SkillsGrid() {
   const row = [...skills, ...skills];
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "relative py-24 sm:py-32", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "relative py-12 md:py-24", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       SectionHeading,
       {
@@ -796,7 +917,7 @@ function SkillsGrid() {
 }
 function Mentors() {
   const { openLead } = useLeadModal();
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { id: "mentors", className: "relative py-24 sm:py-32", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { id: "mentors", className: "relative py-12 md:py-24", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       SectionHeading,
       {
@@ -838,7 +959,7 @@ function Mentors() {
   ] }) });
 }
 function CareerServices() {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-24 sm:py-32", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-12 md:py-24", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       SectionHeading,
       {
@@ -1089,18 +1210,43 @@ const getGoogleReviews = createServerFn({
 })).handler(createSsrRpc("fe2455a015e9c9ea23d912b9f2e8a2b2c1305013b80335029412b839fc500aeb"));
 const PLACE_ID = "ChIJeX4B2pHnfYERMl8xVZ9N0dk";
 const PLACE_QUERY = "CodeXmattriX Academy, Dharamshala, Himachal Pradesh";
+const WORD_LIMIT = 25;
 function renderStars(rating) {
   const rounded = Math.round(rating);
-  return Array.from({ length: 5 }).map((_, index) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Star,
-    {
-      className: cn(
-        "size-4",
-        index < rounded ? "text-yellow-400" : "text-slate-500/50"
-      )
-    },
-    index
-  ));
+  return Array.from({ length: 5 }).map(function(_, index) {
+    const filled = index < rounded;
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Star,
+      {
+        className: cn("size-5", filled ? "text-yellow-400" : "text-slate-500/50"),
+        fill: filled ? "currentColor" : "none",
+        strokeWidth: filled ? 0 : 1.5
+      },
+      index
+    );
+  });
+}
+function ReviewText({ text }) {
+  const [expanded, setExpanded] = reactExports.useState(false);
+  const words = text.trim().split(/\s+/);
+  const isLong = words.length > WORD_LIMIT;
+  const preview = words.slice(0, WORD_LIMIT).join(" ");
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-4 text-sm leading-6 text-slate-300", children: [
+    expanded || !isLong ? text : preview + "...",
+    isLong ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "button",
+      {
+        type: "button",
+        onClick: function() {
+          setExpanded(function(prev) {
+            return !prev;
+          });
+        },
+        className: "ml-1 font-semibold text-gradient hover:underline",
+        children: expanded ? "Read less" : "Read more"
+      }
+    ) : null
+  ] });
 }
 function GoogleReviews() {
   const [reviews, setReviews] = reactExports.useState([]);
@@ -1149,13 +1295,13 @@ function GoogleReviews() {
       window.clearInterval(timer);
     };
   }, [carouselApi, reviews.length]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-24 sm:py-32", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-12 md:py-24", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-10 text-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       SectionHeading,
       {
         eyebrow: "Google reviews",
         title: /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-          " What our  ",
+          " What our ",
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gradient", children: "learners say" })
         ] }),
         subtitle: "Real feedback from students and alumni on our training and placement support."
@@ -1188,7 +1334,7 @@ function GoogleReviews() {
               ] })
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-4 flex gap-1", children: renderStars(review.rating) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-4 text-sm leading-6 text-slate-300", children: review.text })
+            /* @__PURE__ */ jsxRuntimeExports.jsx(ReviewText, { text: review.text })
           ] }) }, index)) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(CarouselPrevious, {}),
           /* @__PURE__ */ jsxRuntimeExports.jsx(CarouselNext, {})
@@ -1214,7 +1360,7 @@ const logoNames = [
   "Prism"
 ];
 function HiringPartners() {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-24 sm:py-32", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-12 md:py-24", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       SectionHeading,
       {
@@ -1239,7 +1385,7 @@ function HiringPartners() {
 }
 function StartupIncubation() {
   const { openLead } = useLeadModal();
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-24 sm:py-32", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-12 md:py-24", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       SectionHeading,
       {
@@ -1272,7 +1418,7 @@ function StartupIncubation() {
 function SuccessStories() {
   const [i, setI] = reactExports.useState(0);
   const s = stories[i];
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { id: "stories", className: "relative py-24 sm:py-32", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-6xl px-4 sm:px-6", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { id: "stories", className: "relative py-12 md:py-24", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-6xl px-4 sm:px-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       SectionHeading,
       {
@@ -1388,7 +1534,7 @@ function AnimatedCounter({
 }
 function GlobalImpact() {
   const total = globalCountries.reduce((a, b) => a + b.students, 0);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-24 sm:py-32", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-12 md:py-24", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       SectionHeading,
       {
@@ -1449,7 +1595,7 @@ function GlobalImpact() {
   ] }) });
 }
 function Certifications() {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-24 sm:py-32", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-12 md:py-24", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       SectionHeading,
       {
@@ -1510,7 +1656,7 @@ function UrgencyScholarships() {
   const seatsLeft = 12;
   const pct = (seatsTotal - seatsLeft) / seatsTotal * 100;
   const { openLead } = useLeadModal();
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-24 sm:py-32", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx(GlassCard, { className: "glass-strong overflow-hidden p-8 sm:p-12", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:items-center", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-12 md:py-24", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mx-auto max-w-7xl px-4 sm:px-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx(GlassCard, { className: "glass-strong overflow-hidden p-8 sm:p-12", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:items-center", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "inline-flex items-center gap-2 rounded-full bg-[color:var(--accent)]/15 px-3 py-1 text-xs font-mono uppercase tracking-[0.18em] text-[color:var(--accent)]", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "size-3" }),
@@ -1537,7 +1683,7 @@ function UrgencyScholarships() {
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-white/10 bg-[oklch(0.1_0.04_270)] p-6", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-center text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground", children: "Application deadline" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-5 grid grid-cols-4 gap-3 text-center", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-5 grid grid-cols-2 md:grid-cols-4 gap-3 text-center", children: [
         { l: "Days", v: t.d },
         { l: "Hours", v: t.h },
         { l: "Mins", v: t.m },
@@ -1580,7 +1726,7 @@ const AccordionContent = reactExports.forwardRef(({ className, children, ...prop
 ));
 AccordionContent.displayName = Content2.displayName;
 function FAQ() {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { id: "faq", className: "relative py-24 sm:py-32", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-3xl px-4 sm:px-6", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { id: "faq", className: "relative py-12 md:py-24", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-3xl px-4 sm:px-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       SectionHeading,
       {
@@ -1607,7 +1753,7 @@ function FAQ() {
 }
 function FinalCTA() {
   const { openLead } = useLeadModal();
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-28 sm:py-36", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mx-auto max-w-5xl px-4 sm:px-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative overflow-hidden rounded-[32px] border border-white/15 p-10 sm:p-16", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "relative py-12 md:py-24", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mx-auto max-w-5xl px-4 sm:px-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative overflow-hidden rounded-[32px] border border-white/15 p-10 sm:p-16", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 -z-10 bg-gradient-primary opacity-25" }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 -z-10 bg-gradient-mesh opacity-30" }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 -z-10 grid-bg opacity-20" }),
@@ -1734,6 +1880,7 @@ function LeadFormModal({
       setData((d) => ({ ...d, profile: payload.profile ?? d.profile }));
     }
   }, [open, payload]);
+  const availableGoals = data.profile === "Student" ? goals.filter((g) => g !== "2x my salary") : goals;
   const submit = async () => {
     const parsed = schema.safeParse(data);
     if (!parsed.success) {
@@ -1790,24 +1937,29 @@ function LeadFormModal({
                     style: { width: `${(step + 1) / 3 * 100}%` }
                   }
                 ) }),
-                step === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(Step, { title: "What's your primary goal?", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  ChoiceGrid,
-                  {
-                    options: goals,
-                    value: data.goal,
-                    onPick: (v) => {
-                      setData({ ...data, goal: v });
-                      setStep(1);
-                    }
-                  }
-                ) }),
-                step === 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(Step, { title: "What best describes you?", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                step === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(Step, { title: "What best describes you?", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
                   ChoiceGrid,
                   {
                     options: profiles,
                     value: data.profile,
                     onPick: (v) => {
-                      setData({ ...data, profile: v });
+                      setData((d) => ({
+                        ...d,
+                        profile: v,
+                        // Clear a previously picked goal if it's no longer valid for this profile
+                        goal: v === "Student" && d.goal === "2x my salary" ? "" : d.goal
+                      }));
+                      setStep(1);
+                    }
+                  }
+                ) }),
+                step === 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(Step, { title: "What's your primary goal?", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  ChoiceGrid,
+                  {
+                    options: availableGoals,
+                    value: data.goal,
+                    onPick: (v) => {
+                      setData({ ...data, goal: v });
                       setStep(2);
                     }
                   }
@@ -1951,7 +2103,7 @@ function ExitIntentModal() {
       children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { className: "sr-only", children: "Free AI Career Report" }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative overflow-hidden rounded-2xl p-8 text-center", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 -z-10 bg-gradient-glow opacity-10" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 -z-10 glass-strong opacity-10" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mx-auto mb-4 grid size-14 place-items-center rounded-full bg-gradient-primary shadow-glow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Gift, { className: "size-7" }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-2xl font-bold tracking-tight", children: "Wait — grab your free AI Career Report" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-sm text-muted-foreground", children: "A personalised 12-page roadmap with salary benchmarks, skill priorities, and a 90-day plan tailored to your goals." }),

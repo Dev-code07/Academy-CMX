@@ -19,7 +19,8 @@ import "path";
 import "os";
 import "crypto";
 import "../_libs/isbot.mjs";
-const appCss = "/assets/styles-lMoposOf.css";
+const favicon = "data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAABMLAAATCwAAAAAAAAAAAAAAAAAAAAAAAPxrZl/8aWi/+2hq//tma//7ZW7/+2Rw//ticv/7YXT/+mB2//tfee/6XHm/91x8QAAAAAAAAAAAAAAAAPtuYoD7a2T//Gpm//tpaP/7Z2r//GZs/vtmbv/7Y3D/+2Jy//tgdP76X3b/+l54//pdev/5XHyAAAAAAP9xXT/8bmD//G1i//xsZP/8amf/+2ho//tnav/7Zmz//GRu/vtjcP/7YnL/+2B0/vpfdv/7Xnj/+lx6/vpdemD8cF2//G9f//xuYf/8bWP//Gtk/vxqZv78aWn/+2dq//xmbf/7ZW7/+2Nx//tic//7YHT++152/vpeef/6XHm//XJb7/xxXf/8b1///G5h//xsY//9a2X+/Gpo//xoaf78Z2v/+2Zt//tkb//7Y3H/+mJz//thdf/6X3f/+115/v1zWf/9clv+/HFd//2Bc//+v7r//sjF//2QjP/8amj//bS1//tna//7ZW3++2Rv//2xuP/7YXP++mB1//ted/79dFj//HNa//16Zf7/7ev//bev//2knP//5OH//ZCM///////8aGr//Y2R/vtmbv//////+2Jy//thdP/7X3X+/XZW//x0WP/+sKL//sG4//xwXv/8bmD//G1i//xrZP///////I+O///////8en7///////tjb/76YnL/+2F0/v12VP/9dVb//rGh//7Kwf/9clz//HBe//xuYP/8bWL+///////t7P/+x8b//+zt///////7ZW7//GNw/vticv79eFL//XdU//6Ha/7/7ur//rit//2vo///5OH//YF0///////+0c///Gpm/v7Hxv///////GZs/vtlb//7Y3D//XlQ//13Uv/9dlT//YZs//7Ctv/+ysH//qea//1vXv/9tq///H92//xrZf/9fXr//bS0//xnav77Zm3/+2Ru/v57T//9eVH//ndS/v12VP/9dVf//XRZ//xyW//9cV3//XBf//xuYf/8bWP/+2tl//tqZ//8aGn++2dr//tmbe/+e02//npQ//55Uv/+d1P+/XZV//50V/79c1n//XJc//1xXf78b2D//G5h//xsY//8a2b/+2pn//tpaf/7Z2y//31NYP17Tf/+ek/+/XlS//13U//9dVX//XRX/v1zWv/9cVv+/HBd//1vYP/8bmL//Gxk//xqZf78aWf++2hoQAAAAAD/fEx//nxO//15UP/+eFL+/nZT/v12Vf/9dFj//XJZ//1yXP/9cV7//G5g//xtYf78a2P+/WxmfwAAAAAAAAAAAAAAAP95TT/+e02//3lQ7v14Uv/+d1T//nVW/v10WP/9c1r//HFc//1wXv78b2C//G1iYAAAAAAAAAAAwAMAAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAAwAMAAA==";
+const appCss = "/assets/styles-BL46YccP.css";
 function NotFoundComponent() {
   return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex min-h-screen items-center justify-center bg-background px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-md text-center", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-7xl font-bold text-foreground", children: "404" }),
@@ -76,6 +77,9 @@ const Route$1 = createRootRouteWithContext()({
       { name: "twitter:site", content: "@codexmattrix" }
     ],
     links: [
+      // Favicon configured from public directory
+      { rel: "icon", href: favicon },
+      { rel: "shortcut icon", href: favicon },
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
@@ -290,7 +294,7 @@ const assessmentQuestions = [
     options: ["0", "1–3", "4–7", "8+"]
   }
 ];
-const $$splitComponentImporter = () => import("./index-C6--uYqV.mjs");
+const $$splitComponentImporter = () => import("./index-CfS8QMBB.mjs");
 const TITLE = "CodexMattrix Academy™ — Build Your AI Career, Launch Your Startup";
 const DESC = "AI Career Acceleration, Industry Training, Placement, Startup Incubation & Business Transformation. Master AI, ML, GenAI, Automation & Data Science with global mentors and live projects.";
 const Route = createFileRoute("/")({
